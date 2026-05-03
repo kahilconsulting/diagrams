@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Copilot Studio - Platform Overview</title>
+<link rel="stylesheet" href="shared/diagram.css">
+<style>
+body{background:#c2d0e0}
+
+/* ── Experiences Row ── */
+.experiences{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.exp-item{display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:14px;background:rgba(255,255,255,0.85);border:1px solid rgba(0,0,0,0.06)}
+.exp-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.exp-icon svg{width:20px;height:20px}
+.exp-icon.trigger{background:linear-gradient(135deg,#fef3e2,#fde6c4)}
+.exp-icon.trigger svg{color:#d4880f}
+.exp-icon.convo{background:linear-gradient(135deg,#e8f4fd,#d0eafb)}
+.exp-icon.convo svg{color:#2b7dc2}
+.exp-icon.insights{background:linear-gradient(135deg,#fce8ef,#f8d0de)}
+.exp-icon.insights svg{color:#c2395a}
+.exp-icon.auto{background:linear-gradient(135deg,#ece5fd,#ddd3fa)}
+.exp-icon.auto svg{color:#7c5cbf}
+.exp-label{font-size:13px;font-weight:600;color:#3d3930;letter-spacing:-0.01em}
+.exp-sub{font-size:11px;color:#8a8477;font-weight:400}
+.exp-title{font-family:'Segoe UI',sans-serif;font-size:18px;font-weight:600;color:#3d3930;letter-spacing:-0.02em;padding:0 16px}
+
+/* ── Main Platform Container ── */
+.platform{background:linear-gradient(180deg,#ffffff 0%,#faf8f5 100%);border-radius:24px;border:1px solid rgba(0,0,0,0.08);padding:32px;position:relative;box-shadow:0 4px 24px rgba(0,0,0,0.14),0 1px 3px rgba(0,0,0,0.08)}
+.platform-header{text-align:center;margin-bottom:28px;display:flex;align-items:center;justify-content:center;gap:10px}
+.platform-header h2{font-family:'Segoe UI',sans-serif;font-size:22px;font-weight:700;color:#1a1714;letter-spacing:-0.03em}
+.platform-body{display:grid;grid-template-columns:1fr minmax(0,27%);gap:24px}
+
+/* ── Agent Section ── */
+.agent-section{border:1.5px dashed #d4cfc7;border-radius:18px;padding:24px;position:relative}
+.agent-label{position:absolute;top:-10px;left:20px;background:#faf8f5;padding:0 10px;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:#c2693a;letter-spacing:0.02em}
+.agent-body{display:grid;grid-template-columns:minmax(0,22%) 1fr;gap:16px}
+
+/* Instructions Block */
+.instructions{grid-row:1/4;border-radius:14px;padding:24px 20px;background:linear-gradient(180deg,#faf7f4,#f5f0ea);border:1px solid #e8e1d8;display:flex;flex-direction:column}
+.instructions h3{font-family:'Segoe UI',sans-serif;font-size:16px;font-weight:600;color:#3d3930;margin-bottom:4px}
+.instructions .subtitle{font-size:12px;color:#8a8477;margin-bottom:20px;font-weight:500}
+.inst-tags{display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.inst-tag{font-size:12px;color:#6b6560;padding:5px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.inst-tag:last-child{border-bottom:none}
+
+/* Knowledge Block */
+.knowledge{border-radius:14px;padding:20px;background:rgba(106,176,106,0.07);border:1px solid #dce8d8;position:relative;overflow:hidden}
+.knowledge::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6ab06a,#8cc98c);border-radius:14px 14px 0 0}
+.knowledge h3{font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:600;color:#3d6b3d}
+.knowledge p{font-size:12px;color:#6b8a6b;margin-top:4px;line-height:1.5}
+
+/* Tools Block */
+.tools{border-radius:14px;padding:20px;background:rgba(232,164,76,0.07);border:1px solid #eddccc;position:relative;overflow:hidden}
+.tools::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#e8a44c,#f0c078);border-radius:14px 14px 0 0}
+.tools h3{font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:600;color:#8a6420}
+.tools p{font-size:12px;color:#a08050;margin-top:4px;line-height:1.5}
+
+/* Triggers Block */
+.triggers{border-radius:14px;padding:20px;background:rgba(176,136,200,0.07);border:1px solid #e0d4e8;position:relative;overflow:hidden}
+.triggers::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#b088c8,#c8a0dc);border-radius:14px 14px 0 0}
+.triggers h3{font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:600;color:#6b4d80}
+.triggers p{font-size:12px;color:#8a70a0;margin-top:4px;line-height:1.5}
+
+/* LLM Bar */
+.llm-bar{grid-column:1/-1;border-radius:14px;padding:16px 24px;background:rgba(26,106,150,0.07);border:1px solid #b8daf0;text-align:center;margin-top:4px;position:relative;overflow:hidden}
+.llm-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4da8d8,#7ac4e8);border-radius:14px 14px 0 0}
+.llm-bar h3{font-family:'Segoe UI',sans-serif;font-size:14px;font-weight:600;color:#1a6a96;letter-spacing:-0.01em}
+
+/* ── Right Side Tools ── */
+.platform-tools{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-content:start}
+.tool-card{border-radius:14px;padding:24px 20px;background:rgba(96,184,160,0.07);border:1px solid #d4e8e0;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:130px}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#60b8a0,#88d0b8);border-radius:14px 14px 0 0}
+.tool-card h3{font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:600;color:#2d6b58}
+.tool-card p{font-size:12px;color:#5a9a80;margin-top:6px;line-height:1.5}
+
+/* ── Foundation Row ── */
+.foundation{margin-top:28px;border:1.5px dashed #a0b4c8;border-radius:20px;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;position:relative;flex-wrap:wrap;gap:16px}
+.foundation-label{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c2d0e0;padding:0 14px;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:700;color:#2a3a4a;white-space:nowrap;letter-spacing:-0.01em}
+.found-item{display:flex;align-items:center;gap:10px}
+.found-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.5);flex-shrink:0}
+.found-icon svg{width:20px;height:20px;color:#4a6478}
+.found-text{font-family:'Segoe UI',sans-serif;font-size:14px;font-weight:600;color:#2a3a4a}
+.found-sub{font-size:11px;color:#4a6478;font-weight:400}
+
+/* ── Dimmable elements transition ── */
+.experiences,.platform,.instructions,.knowledge,.tools,.triggers,.llm-bar,.platform-tools,.foundation{transition:filter 0.35s ease,opacity 0.35s ease}
+
+@media(max-width:960px){
+  .platform-body{grid-template-columns:1fr}
+  .agent-body{grid-template-columns:1fr 1fr}
+  .instructions{grid-row:auto}
+}
+@media(max-width:600px){
+  .agent-body{grid-template-columns:1fr}
+  .platform-tools{grid-template-columns:1fr}
+  .foundation{justify-content:flex-start}
+  .exp-title{display:none}
+}
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <!-- ═══ EXPERIENCES ROW ═══ -->
+  <div class="experiences">
+    <div class="exp-item" data-popup="usertriggered">
+      <div class="exp-icon trigger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 15l-2 5L9 9l11 4-5 2z"/><path d="M18.5 18.5L22 22"/></svg>
+      </div>
+      <div><div class="exp-label">User triggered</div><div class="exp-sub">Button, menu, card</div></div>
+    </div>
+    <div class="exp-item" data-popup="conversational">
+      <div class="exp-icon convo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div><div class="exp-label">Conversational</div><div class="exp-sub">Chat, Q&A, reasoning</div></div>
+    </div>
+    <div class="exp-title">Agent experiences</div>
+    <div class="exp-item" data-popup="insights">
+      <div class="exp-icon insights">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div><div class="exp-label">AI suggested Insights</div><div class="exp-sub">Alerts, anomalies</div></div>
+    </div>
+    <div class="exp-item" data-popup="autonomous">
+      <div class="exp-icon auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3 L17.5 3 L22 12 L17.5 21 L6.5 21 L2 12 Z"/><path d="M10 8.5 L11.3 12 L15 13 L11.3 14 L10 17.5 L8.7 14 L5 13 L8.7 12 Z" fill="currentColor" stroke="none"/><path d="M17.5 5.5 L18.3 7.7 L20.5 8.5 L18.3 9.3 L17.5 11.5 L16.7 9.3 L14.5 8.5 L16.7 7.7 Z" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div><div class="exp-label">Autonomous</div><div class="exp-sub">Events, schedules</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN PLATFORM ═══ -->
+  <div class="platform">
+    <div class="platform-header">
+      <img src="shared/images/Copilot Studio Icon.png" alt="Copilot Studio" style="width:28px;height:28px;object-fit:contain">
+      <h2>Copilot Studio</h2>
+    </div>
+
+    <div class="platform-body">
+      <!-- LEFT: Agent anatomy -->
+      <div class="agent-section">
+        <div class="agent-label">AI Agent</div>
+        <div class="agent-body">
+          <div class="instructions">
+            <h3>Instructions</h3>
+            <div class="subtitle">& Rules</div>
+            <div class="inst-tags">
+              <div class="inst-tag">Persona</div>
+              <div class="inst-tag">Tone</div>
+              <div class="inst-tag">Boundaries</div>
+              <div class="inst-tag">Safety</div>
+            </div>
+          </div>
+
+          <div class="knowledge">
+            <h3>Knowledge</h3>
+            <p>SharePoint, Dataverse, Files, Websites</p>
+          </div>
+
+          <div class="tools">
+            <h3>Tools</h3>
+            <p>Connectors, Prompts, Flows, Model Context Protocol (MCP), etc.</p>
+          </div>
+
+          <div class="triggers">
+            <h3>Triggers & Topics</h3>
+            <p>Guided flows, Custom &amp; system topics, Event &amp; schedule triggers</p>
+          </div>
+
+          <div class="llm-bar">
+            <h3>LLM: Generative planning & reasoning</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Platform tools -->
+      <div class="platform-tools">
+        <div class="tool-card" data-popup="testing">
+          <h3>Testing & Evals</h3>
+          <p>Chat test panel, test sets</p>
+        </div>
+        <div class="tool-card" data-popup="publish">
+          <h3>Publish</h3>
+          <p>Teams, Web,<br>M365 Copilot, etc.</p>
+        </div>
+        <div class="tool-card" data-popup="multiagent">
+          <h3>Multi-agent orchestration</h3>
+          <p>Sub-agents + delegation</p>
+        </div>
+        <div class="tool-card" data-popup="analytics">
+          <h3>Analytics</h3>
+          <p>Usage, satisfaction, topics</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOUNDATION ROW ═══ -->
+  <div class="foundation">
+    <div class="foundation-label">Microsoft 365 & Power Platform</div>
+    <div class="found-item" data-popup="authentication">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div><div class="found-text">Authentication</div><div class="found-sub">Entra ID</div></div>
+    </div>
+    <div class="found-item" data-popup="security">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div><div class="found-text">Security + DLP</div><div class="found-sub">Data policies</div></div>
+    </div>
+    <div class="found-item" data-popup="lifecycle">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div><div class="found-text">Lifecycle</div><div class="found-sub">ALM + solutions</div></div>
+    </div>
+    <div class="found-item" data-popup="governance">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div><div class="found-text">Governance</div><div class="found-sub">Audit + Purview</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-card" id="popupCard">
+    <button class="popup-close" id="popupClose">&#x2715;</button>
+    <div class="popup-accent" id="popupAccent"></div>
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-subtitle" id="popupSubtitle"></div>
+    <div class="popup-desc" id="popupDesc"></div>
+    <div class="popup-body">
+      <div>
+        <div class="popup-section-label">Key Capabilities</div>
+        <ul class="popup-list" id="popupList"></ul>
+      </div>
+      <div>
+        <div class="popup-section-label">Example Scenarios</div>
+        <ul class="popup-list" id="popupScenarios"></ul>
+      </div>
+    </div>
+    <div class="popup-screenshots">
+      <div class="popup-screenshot-ph">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span class="popup-screenshot-label">Screenshot 1</span>
+      </div>
+      <div class="popup-screenshot-ph">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span class="popup-screenshot-label">Screenshot 2</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend-panel">
+  <span class="legend-title">Focus</span>
+  <div class="legend-sep"></div>
+  <button class="leg active" data-target="experiences">Agent Experiences</button>
+  <button class="leg active" data-target="platform">Copilot Studio</button>
+  <button class="leg active" data-target="instructions">Instructions</button>
+  <button class="leg active" data-target="knowledge">Knowledge</button>
+  <button class="leg active" data-target="tools">Tools</button>
+  <button class="leg active" data-target="triggers">Triggers &amp; Topics</button>
+  <button class="leg active" data-target="llm-bar">LLM</button>
+  <button class="leg active" data-target="platform-tools">Copilot Studio Capabilities</button>
+  <button class="leg active" data-target="foundation">M365 &amp; Power Platform</button>
+  <div class="legend-sep"></div>
+  <button class="leg active" id="allBtn">All</button>
+</div>
+
+<script>
+var popupData = {
+  usertriggered: {
+    title: 'User Triggered',
+    subtitle: 'Agents activated by deliberate user interaction through UI elements',
+    accent: '#d4880f',
+    desc: 'User triggered agents activate when a user deliberately initiates an interaction through a UI element — no typing required. These agents are ideal for structured, predictable workflows where the user knows exactly what action they want to take. The agent receives context from the triggering surface and can respond immediately with relevant, pre-loaded information.',
+    points: ['Buttons embedded in Teams adaptive cards and message extensions','Menu items and actions within Microsoft 365 Copilot','Cards, web parts, and action buttons in SharePoint','Support for rich card responses with images, tables, and further actions','Pre-populates context automatically from the triggering surface','Works seamlessly across desktop, web, and mobile Teams clients'],
+    scenarios: ['Employee clicks "Request Leave" on a Teams HR card and the agent instantly opens a guided approval flow','Sales rep selects "Summarise Account" from a CRM adaptive card to get an AI-generated customer briefing','IT helpdesk user taps "Raise Ticket" on a SharePoint intranet page — agent captures details and creates a ServiceNow record','Manager clicks "Review Budget" in a finance app and the agent surfaces the latest figures with commentary']
+  },
+  conversational: {
+    title: 'Conversational',
+    subtitle: 'Natural language chat agents for Q&A, assistance, and multi-turn reasoning',
+    accent: '#2b7dc2',
+    desc: 'Conversational agents understand natural language and engage in multi-turn dialogue to answer questions, assist users with tasks, and reason through complex problems. They are grounded in your organisation\'s knowledge sources and can follow both guided topic flows and generate free-form responses — adapting to the user\'s intent in real time across any supported channel.',
+    points: ['Natural language understanding powered by a customised NLU model','Multi-turn conversations with full context retention across the session','Responses grounded in connected knowledge sources (SharePoint, Dataverse, files)','Seamlessly blends guided topic flows with generative AI responses','Handles follow-up questions, clarifications, and topic switching gracefully','Supports rich media responses — cards, images, tables, and suggested replies'],
+    scenarios: ['Employee asks "What is our parental leave policy?" and the agent retrieves the correct policy document from SharePoint','Customer asks a multi-part product question — the agent reasons across multiple knowledge sources to give a complete answer','User asks a finance agent "Compare Q3 vs Q4 revenue" — the agent queries Dataverse and returns a formatted summary','Help desk agent guides an employee through a step-by-step software installation troubleshooting flow']
+  },
+  insights: {
+    title: 'AI Suggested Insights',
+    subtitle: 'Proactive agents that surface intelligence before you even ask',
+    accent: '#c2395a',
+    desc: 'AI suggested insights agents proactively surface relevant information, anomalies, and recommendations — delivering intelligence before users even ask. Instead of waiting to be triggered, these agents monitor data sources and conditions, then push timely, relevant insights directly to users through Teams, email, or other channels.',
+    points: ['Proactive alerts triggered by data thresholds, anomalies, or pattern changes','Scheduled digest summaries pushed to Teams channels or individual users','Anomaly detection surfaced before issues escalate','Personalised recommendations based on role, context, and recent activity','Reduces time spent manually monitoring dashboards and reports','Configurable frequency — real-time, hourly, daily, or weekly push'],
+    scenarios: ['Sales agent detects a key account has gone 30 days without engagement and alerts the account manager in Teams','Finance agent identifies an unusual spike in expenses and notifies the CFO with a summary and drill-down link','Operations agent sends a daily shift briefing to team leaders each morning at 7am','HR agent proactively reminds managers of upcoming performance reviews 2 weeks in advance']
+  },
+  autonomous: {
+    title: 'Autonomous',
+    subtitle: 'Self-directed agents that act independently on events and schedules',
+    accent: '#7c5cbf',
+    desc: 'Autonomous agents operate independently — taking actions, running workflows, and completing tasks without requiring a human to initiate them. They are triggered by external events or schedules and can orchestrate complex, multi-step processes across systems. Human-in-the-loop checkpoints can be configured when approval or oversight is required.',
+    points: ['Event triggers — activate on new records, emails, webhooks, or API calls','Schedule triggers — run on daily, weekly, or custom cron-based schedules','Executes multi-step Agent flows end-to-end without human intervention','Calls connectors, updates records, sends messages, and creates documents autonomously','Configurable human-in-the-loop checkpoints for approvals or exceptions','Monitored via autonomous agent health dashboard in Analytics'],
+    scenarios: ['New employee record created in HR system — agent automatically provisions M365 account, sends welcome email, and assigns training','Every Monday at 8am, agent pulls project status updates from Planner and posts a summary to the team\'s Teams channel','Contract expires within 30 days — agent alerts the procurement team, generates a renewal draft, and routes for approval','Support ticket marked "Unresolved for 48hrs" — agent escalates, reassigns, and notifies the customer automatically']
+  },
+  instructions: {
+    title: 'Instructions',
+    subtitle: 'Natural language directives that define your agent\'s identity and behaviour',
+    accent: '#c2693a',
+    desc: 'Instructions are the foundation of your agent\'s behaviour. Written in plain natural language, they define who the agent is, how it communicates, what it focuses on, and what it must never do. No code is required — instructions work like a detailed brief you\'d give a new team member, and the LLM uses them to guide every interaction.',
+    points: ['Persona — define the agent\'s name, role, and personality','Tone — formal, friendly, empathetic, direct, or domain-specific','Scope — what topics and tasks the agent is authorised to help with','Boundaries — explicit rules for what the agent must avoid or refuse','Safety guardrails — prevent harmful, biased, or off-brand responses','Support for dynamic instructions using variables and context at runtime'],
+    scenarios: ['HR agent is instructed to always refer employees to the official policy document before giving advice','Customer service agent is told to never discuss competitor products or pricing','Legal agent is configured to always add a disclaimer and recommend consulting a qualified lawyer','Financial agent is scoped to only answer questions about the current fiscal year data']
+  },
+  knowledge: {
+    title: 'Knowledge',
+    subtitle: 'Grounding your agent in accurate, organisation-specific information',
+    accent: '#6ab06a',
+    desc: 'Knowledge sources connect your agent to the information it needs to give accurate, grounded answers. Instead of authoring a topic for every possible question, you connect the agent to your existing content — SharePoint, Dataverse, files, or websites — and the LLM automatically retrieves and generates responses based on what it finds.',
+    points: ['SharePoint sites, document libraries, and specific folders or files','Dataverse tables — query structured business data in natural language','Uploaded files — PDF, Word, Excel, PowerPoint directly ingested','Public websites and internal intranet pages via URL','Automatic response generation — no explicit topic authoring required','Citations included in responses so users can verify the source'],
+    scenarios: ['IT agent answers "How do I reset my VPN?" by searching the IT knowledge base in SharePoint','HR agent retrieves the exact parental leave entitlements from a PDF policy document stored in SharePoint','Finance agent queries a Dataverse table to answer "What was total revenue in the APAC region last quarter?"','Customer support agent searches a product documentation website to answer technical questions in real time']
+  },
+  tools: {
+    title: 'Tools',
+    subtitle: 'Extending agent capabilities with actions, integrations, and automation',
+    accent: '#e8a44c',
+    desc: 'Tools transform your agent from a conversational assistant into an action-capable system. They allow the agent to take actions in external systems, run automation, call APIs, execute prompts, and delegate tasks to other agents — all orchestrated automatically by the LLM based on the user\'s intent.',
+    points: ['Connectors — 1,000+ pre-built integrations (SharePoint, Outlook, Salesforce, ServiceNow, etc.)','Prompts — reusable, versioned AI prompt templates for consistent generation tasks','Flows — Agent flows built in Power Automate for multi-step automation','Model Context Protocol (MCP) — connect to any MCP-compatible external server','Other agents — delegate specialised tasks to sub-agents in a multi-agent network','Custom APIs — call any REST API directly from an agent action'],
+    scenarios: ['Agent uses a Salesforce connector to create a new opportunity directly from a Teams conversation','Agent runs a Power Automate flow to generate a contract PDF, store it in SharePoint, and send for e-signature','Agent calls an MCP server to query a real-time inventory system and return stock levels','Agent delegates a complex financial calculation to a specialist Finance sub-agent and returns the result']
+  },
+  triggers: {
+    title: 'Triggers & Topics',
+    subtitle: 'Controlling when agents activate and how conversations flow',
+    accent: '#b088c8',
+    desc: 'Triggers and Topics work together to define the full conversation architecture of your agent. Triggers determine the conditions under which the agent activates, while Topics define the structured conversation flows — with nodes, branches, variables, and actions — that guide users through tasks with clarity and control.',
+    points: ['Guided flows — step-by-step conversation paths built with a visual node editor','Custom topics — author specific intents and responses for your use case','System topics — built-in flows for greeting, escalation, fallback, end of conversation, and more','Message triggers — agent activates when a user sends a message matching an intent','Event triggers — activate from external systems via webhook or event subscription','Schedule triggers — initiate a topic run on a defined cron schedule'],
+    scenarios: ['User says "I need to book a meeting room" — the agent matches the intent and starts the room booking guided flow','A new Dataverse record triggers the agent to run an onboarding topic and send a welcome message','System topic "Escalate to Agent" activates automatically when the agent cannot resolve the user\'s issue after 3 attempts','Agent greets users with a personalised welcome topic that adapts based on the user\'s department and role']
+  },
+  llm: {
+    title: 'LLM — Generative Planning & Reasoning',
+    subtitle: 'Powered by Azure OpenAI GPT and a customised NLU model',
+    accent: '#4da8d8',
+    desc: 'The LLM layer is the intelligence engine of every Copilot Studio agent. It combines Azure OpenAI GPT models for generative reasoning and response generation with Microsoft\'s customised NLU model for intent recognition and topic matching. Together, they allow the agent to understand what users want, decide which tools and knowledge to invoke, and generate clear, grounded responses.',
+    points: ['Azure OpenAI GPT — powers free-form reasoning, summarisation, and generation','Customised NLU model — matches user utterances to topics and intents with high accuracy','Orchestration layer — decides which tools, knowledge sources, and flows to invoke','Context retention — maintains conversation history for coherent multi-turn dialogue','Generative answers — produces responses directly from knowledge sources without topic authoring','Safety filters — built-in content moderation and responsible AI guardrails'],
+    scenarios: ['User asks a complex multi-part question — the LLM reasons across knowledge sources, selects the right tool, and synthesises a coherent answer','Agent receives an ambiguous request — the NLU model identifies the most likely intent and asks a targeted clarifying question','LLM generates a formal email draft based on bullet points the user provided in a Teams chat','Agent automatically selects between three possible tools based on the user\'s specific wording and context']
+  },
+  testing: {
+    title: 'Testing & Evals',
+    subtitle: 'Validate agent quality before publishing with structured evaluation tools',
+    accent: '#60b8a0',
+    desc: 'Copilot Studio provides a comprehensive set of testing and evaluation tools to validate your agent\'s quality, accuracy, and behaviour before it reaches end users. From real-time chat testing while building, to structured test sets and automated evaluation runs, you can measure and continuously improve agent performance with confidence.',
+    points: ['Chat test panel — interact with your agent in real time during authoring','Test sets — create curated question-and-expected-answer datasets','Evaluation runs — score agent responses against expected outputs automatically','Version comparison — track improvement or regression across agent versions','Demo website — share a hosted preview with stakeholders for feedback before publishing','Detailed evaluation metrics — accuracy, topic match rate, and generative answer quality'],
+    scenarios: ['Author tests 20 HR policy questions in the chat panel to verify the agent retrieves the correct policy documents','QA team runs a 200-question test set overnight and reviews evaluation scores the next morning','Agent owner compares evaluation scores between v1 and v2 to confirm the new knowledge source improved accuracy by 15%','Stakeholders preview the agent on a demo website and submit feedback before go-live approval']
+  },
+  publish: {
+    title: 'Publish',
+    subtitle: 'Deploy your agent to every channel with a single publish action',
+    accent: '#60b8a0',
+    desc: 'Copilot Studio\'s publish system allows you to deploy your agent to any channel your users are already in — a single publish action pushes the latest version across all configured channels simultaneously. Channels range from Microsoft 365 surfaces to third-party messaging platforms and custom web experiences.',
+    points: ['Microsoft Teams — as a personal app, tab, or bot in channels and group chats','Microsoft 365 Copilot — surface your agent inside M365 Copilot experiences','Web chat — generate an embed snippet for any website or intranet page','Azure Bot Service channels — Slack, Telegram, Twilio SMS, Line, and more','WhatsApp and Facebook Messenger — reach customers on consumer platforms','Omnichannel for Customer Service — integrate with Dynamics 365 contact centre'],
+    scenarios: ['HR agent published to Teams and SharePoint simultaneously — all employees can access it from their preferred surface','Customer service bot deployed to the company website and WhatsApp so customers can get support on any device','Internal IT assistant embedded in the company intranet home page via the web chat snippet','Sales agent published to Teams and integrated with Dynamics 365 Omnichannel for field sales teams']
+  },
+  multiagent: {
+    title: 'Multi-agent Orchestration',
+    subtitle: 'Networks of specialised agents collaborating to handle complex tasks',
+    accent: '#60b8a0',
+    desc: 'Multi-agent orchestration allows you to build ecosystems of specialised agents that collaborate, delegate, and hand off tasks to each other. An orchestrator agent receives user requests and intelligently routes sub-tasks to the most appropriate specialist agent — enabling complex, cross-domain workflows that would be too large for a single agent to handle.',
+    points: ['Orchestrator agent — coordinates the overall conversation and delegates sub-tasks','Sub-agents — specialised agents focused on a specific domain or capability','Agents can call other Copilot Studio agents as tools via the agent tool type','Supports delegation chains — sub-agents can themselves call further specialist agents','Human-in-the-loop — escalate to a human agent when the task requires it','Shared context passing — orchestrator shares relevant context when delegating'],
+    scenarios: ['A master "Employee Services" agent delegates leave requests to an HR agent, IT requests to an IT agent, and payroll queries to a Finance agent','Sales orchestrator receives a complex deal request and calls a pricing agent, a legal agent, and a competitor analysis agent in sequence','Customer support orchestrator handles Tier 1 questions directly, escalates Tier 2 to a specialist product agent, and routes Tier 3 to a human','Research agent delegates data retrieval to a Dataverse agent, analysis to an analytics agent, and report generation to a document agent']
+  },
+  analytics: {
+    title: 'Analytics',
+    subtitle: 'Monitor, measure, and improve agent performance in production',
+    accent: '#60b8a0',
+    desc: 'Copilot Studio\'s Analytics dashboards give you full visibility into how your agents are performing in production. From conversation volume and topic effectiveness to autonomous agent health and satisfaction scores, you have the data needed to continuously improve your agents and demonstrate business value.',
+    points: ['Usage metrics — total sessions, unique users, messages, and channel breakdown','Topic analytics — which topics are triggered, completed, abandoned, or escalated','Satisfaction scores — CSAT ratings and escalation-to-human rates per topic','Generative answer quality — track how often AI-generated answers are used vs. topics','Autonomous agent health — run counts, success rates, failure reasons, and duration','Power BI export — send analytics data to Power BI for custom dashboards and reporting'],
+    scenarios: ['Agent owner identifies that 40% of sessions are escalating to a human on a specific topic and rewrites it to improve resolution rate','IT manager reviews the weekly usage report to confirm the help desk agent is handling 200+ tickets per week autonomously','Analytics reveals that users frequently ask questions the agent cannot answer — owner adds a new knowledge source to address the gap','Operations team monitors the autonomous order-processing agent\'s daily run success rate and receives alerts when the failure rate exceeds 5%']
+  },
+  authentication: {
+    title: 'Authentication',
+    subtitle: 'Securing agent access with Microsoft Entra ID and flexible auth options',
+    accent: '#4a6478',
+    desc: 'Copilot Studio provides flexible authentication options to match any deployment scenario — from fully public-facing agents with no login required, to enterprise-grade agents secured with Microsoft Entra ID Single Sign-On. Authentication also controls what data and connectors the agent can access on behalf of the signed-in user.',
+    points: ['Microsoft Entra ID — default for Teams and M365 Copilot deployments','Single Sign-On (SSO) — users are authenticated seamlessly without a separate login prompt','No authentication — suitable for public-facing web chat bots (FAQ, marketing, etc.)','Custom OAuth — bring your own identity provider (Okta, Auth0, Azure B2C, etc.)','End-user authentication for connectors — agent accesses data as the signed-in user','Token exchange — secure token passing between the agent and external APIs'],
+    scenarios: ['Internal HR agent deployed to Teams uses SSO — employees never see a login prompt and the agent knows who they are automatically','Public-facing product FAQ bot on the company website uses no authentication — anyone can chat without signing in','Agent calls the Microsoft Graph API on behalf of the signed-in user to retrieve their own calendar and emails','Partner portal agent authenticates via Azure B2C so external partners can log in with their company credentials']
+  },
+  security: {
+    title: 'Security + DLP',
+    subtitle: 'Protecting sensitive data with platform-level policy enforcement',
+    accent: '#4a6478',
+    desc: 'Data Loss Prevention (DLP) policies and security controls in the Power Platform admin centre ensure that agents only connect to approved data sources and cannot exfiltrate sensitive information. Policies are enforced at the environment and tenant level, giving IT and compliance teams central control over all agent behaviour.',
+    points: ['DLP policies — define which connectors agents are permitted to use','Business vs. non-business data classification — prevent mixing sensitive data with external services','Environment-level policy enforcement — apply different rules for Dev, Test, and Production','Tenant-wide policies — apply baseline rules across all environments in the organisation','Connector blocking — prevent agents from using unapproved third-party services','Aligned with Microsoft 365 and Power Platform security compliance frameworks'],
+    scenarios: ['DLP policy prevents a customer service agent from connecting to a public file-sharing service and exposing customer data','IT admin creates a policy that allows Dataverse and SharePoint connectors but blocks all social media connectors in the Production environment','Compliance team audits all agents in the tenant to confirm no agent is using unapproved external connectors','New DLP policy is applied tenant-wide to block any connector that sends data outside the organisation\'s geographic region']
+  },
+  lifecycle: {
+    title: 'Lifecycle — ALM & Solutions',
+    subtitle: 'Managing agent development from build to production with Power Platform ALM',
+    accent: '#4a6478',
+    desc: 'Power Platform ALM (Application Lifecycle Management) provides the tooling to manage your agent\'s development lifecycle in a structured, repeatable way. Agents are packaged into solutions for transport between environments, and pipelines automate the promotion process from development to testing to production.',
+    points: ['Solutions — package agents, flows, and configurations into portable, versioned bundles','Environment strategy — separate Dev, Test (UAT), and Production environments','Power Platform Pipelines — automate the promotion of solutions between environments','Source control integration — export solutions to Git for version history and collaboration','Managed vs. unmanaged solutions — control what makers can customise in downstream environments','Rollback support — revert to a previous solution version if an issue is detected in production'],
+    scenarios: ['Development team builds and tests an agent in the Dev environment, then promotes it to UAT via a pipeline for business sign-off','Release manager approves the pipeline run that deploys the approved agent solution to the Production environment','Solution exported to GitHub after every sprint — full history of changes maintained for audit and rollback','Agent solution packaged with all dependent flows, custom connectors, and environment variables for a clean, reliable deployment']
+  },
+  governance: {
+    title: 'Governance',
+    subtitle: 'Oversight, compliance, and control across all agent deployments',
+    accent: '#4a6478',
+    desc: 'Governance capabilities in Copilot Studio and the Power Platform admin centre give IT, compliance, and CoE teams full visibility and control over all agents deployed across the organisation. Audit logs, Microsoft Purview integration, and admin centre tooling ensure agents operate within the boundaries of organisational policy and regulatory requirements.',
+    points: ['Audit logs — full history of agent creation, publishing, configuration changes, and usage','Microsoft Purview — apply sensitivity labels, retention policies, and information protection to agent interactions','Admin centre — inventory of all agents in the tenant with ownership, status, and channel details','Environment and tenant-level access controls — restrict who can create and publish agents','Centre of Excellence (CoE) Starter Kit — governance templates, monitoring dashboards, and maker management tools','Compliance reporting — export agent activity data for regulatory and internal audit requirements'],
+    scenarios: ['Compliance officer uses Purview to apply a sensitivity label to all conversations with the legal agent, ensuring they are retained for 7 years','IT admin uses the Admin Centre to identify all agents published to Teams and confirm each one has an assigned owner','CoE team deploys the Starter Kit to get a full tenant-wide inventory of agents, their usage, and their DLP compliance status','Security team reviews the audit log after an incident to trace exactly when an agent\'s knowledge source was changed and by whom']
+  }
+};
+
+var classMap = { instructions:'instructions', knowledge:'knowledge', tools:'tools', triggers:'triggers', 'llm-bar':'llm' };
+</script>
+<script src="shared/diagram.js"></script>
+</body>
+</html>
