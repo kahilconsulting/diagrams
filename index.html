@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft AI Diagrams</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100vh;background:#c2d0e0;font-family:'Segoe UI',sans-serif}
+body{padding:48px 40px 64px}
+
+/* ── Header ── */
+.header{text-align:center;margin-bottom:48px}
+.header-logo{height:52px;width:auto;margin-bottom:18px;display:block;margin-left:auto;margin-right:auto}
+.header h1{font-size:32px;font-weight:700;color:#1a2a38;letter-spacing:-0.03em;margin-bottom:8px}
+.header p{font-size:15px;color:#4a6478;max-width:520px;margin:0 auto;line-height:1.6}
+
+/* ── Grid ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;max-width:1100px;margin:0 auto}
+
+/* ── Card base ── */
+.card{background:#fff;border-radius:20px;border:1px solid rgba(0,0,0,0.07);padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08),0 1px 3px rgba(0,0,0,0.05);transition:transform 0.18s,box-shadow 0.18s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0}
+
+/* Live cards are clickable */
+.card.live{cursor:pointer;text-decoration:none;color:inherit;display:flex}
+.card.live:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.14),0 2px 6px rgba(0,0,0,0.08)}
+.card.live:active{transform:translateY(-1px)}
+
+/* ── Accent colours per card ── */
+.card.copilot-studio::before{background:linear-gradient(90deg,#7b5ea7,#c96dd8,#43b4e4)}
+.card.ai-ecosystem::before{background:linear-gradient(90deg,#0078d4,#2b7dc2,#50b0f0)}
+.card.prompts::before{background:linear-gradient(90deg,#e8a44c,#f0c078)}
+.card.power-automate::before{background:linear-gradient(90deg,#0066b8,#2b7dc2)}
+.card.power-apps::before{background:linear-gradient(90deg,#742774,#9a3f9a)}
+
+/* ── Card icon ── */
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon svg{width:22px;height:22px}
+.card.copilot-studio .card-icon{background:linear-gradient(135deg,#ede5f8,#ddd3fa)}
+.card.copilot-studio .card-icon svg{color:#7b5ea7}
+.card.ai-ecosystem .card-icon{background:linear-gradient(135deg,#ddf0ff,#c0e0ff)}
+.card.ai-ecosystem .card-icon svg{color:#0078d4}
+.card.prompts .card-icon{background:linear-gradient(135deg,#fef3e2,#fde6c4)}
+.card.prompts .card-icon svg{color:#d4880f}
+.card.power-automate .card-icon{background:linear-gradient(135deg,#deeeff,#c8dff8)}
+.card.power-automate .card-icon svg{color:#0066b8}
+.card.power-apps .card-icon{background:linear-gradient(135deg,#f5e0f5,#ead0ea)}
+.card.power-apps .card-icon svg{color:#742774}
+
+/* ── Card content ── */
+.card-top{display:flex;align-items:flex-start;gap:14px}
+.card-meta{flex:1}
+.card-title{font-size:16px;font-weight:700;color:#1a1714;letter-spacing:-0.02em;line-height:1.3;margin-bottom:4px}
+.card-sub{font-size:12px;color:#8a8477;font-weight:400;line-height:1.4}
+.card-desc{font-size:13px;color:#4a4540;line-height:1.65}
+
+/* ── Status badge ── */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.04em;width:fit-content}
+.badge.live{background:rgba(76,168,96,0.12);color:#2d7a3d;border:1px solid rgba(76,168,96,0.25)}
+.badge.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ca860;display:inline-block}
+.badge.soon{background:rgba(0,0,0,0.05);color:#8a8477;border:1px solid rgba(0,0,0,0.08)}
+
+/* ── Arrow for live cards ── */
+.card-arrow{position:absolute;bottom:24px;right:24px;width:28px;height:28px;border-radius:8px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.card.live:hover .card-arrow{background:rgba(0,0,0,0.1)}
+.card-arrow svg{width:14px;height:14px;color:#4a4540}
+
+@media(max-width:640px){
+  body{padding:32px 20px 48px}
+  .header h1{font-size:24px}
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img class="header-logo" src="shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
+  <h1>Microsoft AI Reference Diagrams</h1>
+  <p>Interactive architecture diagrams for Microsoft AI, Copilot Studio, and the Power Platform.</p>
+</div>
+
+<div class="grid">
+
+  <!-- 1. Copilot Studio Overview — LIVE -->
+  <a class="card live copilot-studio" href="Copilot Studio Overview Diagram.html">
+    <div class="card-top">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12h8M12 8v8"/></svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-title">Copilot Studio Overview</div>
+        <div class="card-sub">Platform architecture</div>
+      </div>
+    </div>
+    <div class="card-desc">The full Copilot Studio platform — agent anatomy, experiences, knowledge, tools, triggers, LLM layer, and M365 foundation.</div>
+    <div class="badge live">Live</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- 2. Copilot Studio in the Microsoft AI Ecosystem — Coming Soon -->
+  <div class="card ai-ecosystem">
+    <div class="card-top">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-title">Copilot Studio in the Microsoft AI Ecosystem</div>
+        <div class="card-sub">Ecosystem positioning</div>
+      </div>
+    </div>
+    <div class="card-desc">How Copilot Studio fits within Azure AI, Microsoft 365 Copilot, and the broader Microsoft AI platform landscape.</div>
+    <div class="badge soon">Coming soon</div>
+  </div>
+
+  <!-- 3. Microsoft AI Prompts Overview — LIVE -->
+  <a class="card live prompts" href="AI Prompts Overview Diagram.html">
+    <div class="card-top">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h5"/></svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-title">Microsoft AI Prompts Overview</div>
+        <div class="card-sub">Prompt engineering</div>
+      </div>
+    </div>
+    <div class="card-desc">Prompt types, prompt anatomy, best practices, and how prompts flow through Microsoft Copilot and Azure OpenAI.</div>
+    <div class="badge live">Live</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- 4. Power Automate and Agents Flow — Coming Soon -->
+  <div class="card power-automate">
+    <div class="card-top">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-title">Power Automate &amp; Agents Flow</div>
+        <div class="card-sub">Automation &amp; orchestration</div>
+      </div>
+    </div>
+    <div class="card-desc">How Power Automate flows and Copilot Studio agents work together — triggers, actions, agent flows, and end-to-end orchestration.</div>
+    <div class="badge soon">Coming soon</div>
+  </div>
+
+  <!-- 5. Power Apps Overview — Coming Soon -->
+  <div class="card power-apps">
+    <div class="card-top">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="3"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-title">Power Apps Overview</div>
+        <div class="card-sub">App development platform</div>
+      </div>
+    </div>
+    <div class="card-desc">Canvas apps, model-driven apps, and how Power Apps integrates with Dataverse, connectors, and AI capabilities.</div>
+    <div class="badge soon">Coming soon</div>
+  </div>
+
+</div>
+</body>
+</html>

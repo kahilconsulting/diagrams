@@ -17,6 +17,10 @@ body{background:#c2d0e0}
 </style>
 </head>
 <body>
+<!-- Images:
+     shared logos/icons  →  ../shared/images/<file>
+     diagram screenshots →  ../images/<diagram-slug>/<file>   e.g. ../images/copilot-studio/screenshot.png
+-->
 <div class="diagram">
 
   <!-- ═══ YOUR DIAGRAM CONTENT ═══ -->
@@ -42,16 +46,7 @@ body{background:#c2d0e0}
         <ul class="popup-list" id="popupScenarios"></ul>
       </div>
     </div>
-    <div class="popup-screenshots">
-      <div class="popup-screenshot-ph">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        <span class="popup-screenshot-label">Screenshot 1</span>
-      </div>
-      <div class="popup-screenshot-ph">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        <span class="popup-screenshot-label">Screenshot 2</span>
-      </div>
-    </div>
+    <div class="popup-screenshots" id="popupScreenshots"></div>
   </div>
 </div>
 
@@ -65,8 +60,14 @@ body{background:#c2d0e0}
   <button class="leg active" id="allBtn">All</button>
 </div>
 
+<div class="diagram-brand">
+  <span class="diagram-brand-text">Created by</span>
+  <img class="diagram-brand-logo" src="../shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
+</div>
+
 <script>
-/* Popup content — add one entry per data-popup key used in the HTML above */
+/* Popup content — add one entry per data-popup key used in the HTML above.
+   Use points+scenarios for bullet-list popups, or screenshots for image popups (or both). */
 var popupData = {
   example: {
     title: 'Example Title',
@@ -75,12 +76,16 @@ var popupData = {
     desc: 'Full description paragraph explaining what this element does and why it matters.',
     points: [
       'Capability or feature 1',
-      'Capability or feature 2',
-      'Capability or feature 3'
+      'Capability or feature 2'
     ],
     scenarios: [
       'Real-world scenario showing how this is used',
       'Another concrete example'
+    ],
+    /* Optional: replace or combine with screenshots */
+    screenshots: [
+      { src: 'images/<diagram-slug>/screenshot1.jpg', desc: 'Caption shown above the image.' },
+      { src: 'images/<diagram-slug>/screenshot2.jpg', desc: 'Caption shown above the image.' }
     ]
   }
 };

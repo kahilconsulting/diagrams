@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Published Diagram Snapshots</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100vh;background:#c2d0e0;font-family:'Segoe UI',sans-serif}
+body{padding:48px 40px 64px}
+
+.header{text-align:center;margin-bottom:48px}
+.header-logo{height:52px;width:auto;margin-bottom:18px;display:block;margin-left:auto;margin-right:auto}
+.header h1{font-size:32px;font-weight:700;color:#1a2a38;letter-spacing:-0.03em;margin-bottom:8px}
+.header p{font-size:15px;color:#4a6478;max-width:520px;margin:0 auto;line-height:1.6}
+
+.inner{max-width:700px;margin:0 auto}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#4a6478;text-decoration:none;margin-bottom:32px;font-weight:500}
+.back-link:hover{color:#1a2a38}
+
+.section-label{font-size:11px;font-weight:700;letter-spacing:0.08em;color:#8a9eb0;text-transform:uppercase;margin-bottom:14px}
+
+.snaps{display:flex;flex-direction:column;gap:10px}
+
+.snap-card{background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.07);padding:18px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s}
+.snap-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
+
+.snap-name{font-size:15px;font-weight:600;color:#1a1714;flex:1;line-height:1.3}
+.snap-date{font-size:11px;color:#8a8477;background:#f5f3f0;padding:3px 10px;border-radius:20px;white-space:nowrap;font-family:'Segoe UI Mono',Consolas,monospace;font-weight:500;flex-shrink:0}
+.snap-label{font-size:11px;font-weight:700;color:#7b5ea7;background:rgba(123,94,167,0.1);padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.snap-arrow{font-size:16px;color:#c0b8b0;flex-shrink:0}
+
+@media(max-width:640px){
+  body{padding:32px 20px 48px}
+  .header h1{font-size:24px}
+  .snap-card{flex-wrap:wrap}
+  .snap-arrow{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img class="header-logo" src="../shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
+  <h1>Published Snapshots</h1>
+  <p>Stable diagram versions linked from YouTube videos. Each snapshot is frozen at its publication date and will not change.</p>
+</div>
+
+<div class="inner">
+  <a class="back-link" href="../index.html">&#8592; Back to all diagrams</a>
+  <div class="section-label">All published snapshots</div>
+  <div class="snaps">
+<!-- SNAPSHOTS_START -->
+    <a class="snap-card" href="ai-prompts-overview-diagram-2026-05-13.html">
+      <div class="snap-name">Microsoft AI Prompts Overview</div>
+      <div class="snap-date">2026-05-13</div>
+      <div class="snap-arrow">&#8594;</div>
+    </a>
+    <a class="snap-card" href="copilot-studio-overview-diagram-2026-05-13.html">
+      <div class="snap-name">Copilot Studio Overview</div>
+      <div class="snap-date">2026-05-13</div>
+      <div class="snap-label">Ep. 1</div>
+      <div class="snap-arrow">&#8594;</div>
+    </a>
+<!-- SNAPSHOTS_END -->
+  </div>
+</div>
+
+</body>
+</html>

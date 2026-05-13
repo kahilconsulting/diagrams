@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Prompts - Platform Overview</title>
+<link rel="stylesheet" href="shared/diagram.css">
+<style>
+body{background:#c4d1e2}
+
+/* ── Top prompt-source cards ── */
+.prompt-sources{display:flex;flex-direction:row;align-items:center;gap:10px}
+.ps-card{padding:9px 20px;border-radius:13px;background:#fff;border:1px solid #5abcd4;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:#1a6a82;text-align:center;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.09)}
+
+/* ── Mid row ── */
+.mid-row{display:flex;align-items:center;gap:16px}
+
+/* ── IO boxes ── */
+.inputs-col,.outputs-col{width:180px;flex-shrink:0;display:flex;flex-direction:column;gap:14px}
+.io-box{height:56px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:#fff;border:1px solid #56aa56;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:#2d6a2d;text-align:center;line-height:1.3;box-shadow:0 2px 8px rgba(0,0,0,0.07);padding:0 12px}
+
+/* ── Horizontal arrow groups ── */
+.h-arrow-grp{display:flex;flex-direction:column;gap:14px;flex-shrink:0}
+.h-arrow svg{display:block}
+
+/* ── Central prompt platform ── */
+.prompt-platform{flex:1;background:#fff;border-radius:20px;border:1px solid rgba(0,0,0,0.09);box-shadow:0 8px 40px rgba(0,0,0,0.15),0 2px 6px rgba(0,0,0,0.06);overflow:hidden;min-width:0}
+
+/* Window title bar */
+.pw-bar{background:linear-gradient(135deg,#f8f6f4,#f2ede7);border-bottom:1px solid #e4ddd5;padding:10px 18px;display:flex;align-items:center;gap:10px}
+.pw-icon{width:24px;height:24px;border-radius:6px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pw-icon img{width:24px;height:24px;object-fit:contain;border-radius:6px}
+.pw-title{font-family:'Segoe UI',sans-serif;font-size:12px;font-weight:600;color:#3d3930;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pw-controls{display:flex;gap:5px;flex-shrink:0}
+.pw-dot{width:11px;height:11px;border-radius:50%}
+.pw-dot.red{background:#f07068}
+.pw-dot.yellow{background:#f5c04a}
+.pw-dot.green{background:#72c472}
+
+/* Two-panel editor */
+.pw-editor{display:grid;grid-template-columns:1fr 1fr}
+.pw-panel{padding:14px 18px;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.pw-panel:hover{background:rgba(0,0,0,0.015)}
+.pw-panel+.pw-panel{border-left:1px solid #e8e1d8}
+.pw-panel-hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid #f0ece8;flex-shrink:0}
+.pw-panel-title{font-family:'Segoe UI',sans-serif;font-size:12px;font-weight:700;color:#3d3930}
+.pw-tags{display:flex;gap:5px}
+.pw-tag{font-family:'Segoe UI',sans-serif;font-size:10px;padding:3px 8px;border-radius:6px;font-weight:600}
+.pw-tag.model{background:#e8f4fd;color:#2b7dc2}
+.pw-tag.test{background:#fef0e0;color:#d4880f}
+.pw-tag.output{background:#eef8e8;color:#4a8c2a}
+
+/* Instructions content */
+.inst-block{font-family:'Segoe UI',sans-serif;font-size:10.5px;color:#5a5550;line-height:1.55;flex:1;overflow:hidden}
+.inst-bold{font-weight:700;color:#3d3930;margin-bottom:3px;font-size:10.5px}
+.inst-sub{font-size:10px;color:#8a8477;margin-bottom:7px}
+.inst-item{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;font-size:10px;color:#5a5550;line-height:1.45}
+.inst-cb{width:11px;height:11px;border-radius:3px;background:#5aaa5a;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.inst-cb svg{display:block}
+
+/* Response content */
+.resp-block{font-family:'Segoe UI',sans-serif;font-size:10.5px;color:#5a5550;line-height:1.55;flex:1;overflow:hidden}
+.resp-score{font-size:11.5px;font-weight:700;color:#3d3930;margin-bottom:5px}
+.resp-subtitle{font-size:10px;font-weight:600;color:#3d3930;margin-bottom:4px}
+.resp-item{display:flex;align-items:flex-start;gap:5px;margin-bottom:3px;font-size:10px;line-height:1.45}
+.resp-ok{color:#5aaa5a;flex-shrink:0;line-height:1.45}
+.resp-no{color:#e06060;flex-shrink:0;line-height:1.45}
+.resp-note{font-size:10px;color:#5a5550;line-height:1.5;margin-top:6px;border-top:1px solid #f0ece8;padding-top:6px}
+
+/* Footer */
+.pw-footer{padding:9px 18px;display:flex;align-items:center;gap:8px;background:#faf8f5;border-top:1px solid #ece8e2;flex-shrink:0}
+.pw-add-btn{font-family:'Segoe UI',sans-serif;font-size:10.5px;background:#e8e4dc;border:none;padding:4px 10px;border-radius:7px;color:#5a5550;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:4px}
+.pw-inp-tag{font-size:10px;color:#8a8477;font-family:'Segoe UI',sans-serif}
+.pw-meta{font-size:10px;color:#b0a898;margin-left:auto;font-family:'Segoe UI',sans-serif}
+.pw-save-btn{font-family:'Segoe UI',sans-serif;font-size:10.5px;background:linear-gradient(135deg,#7c58e8,#6040c8);border:none;padding:5px 14px;border-radius:7px;color:#fff;cursor:pointer;font-weight:600}
+.pw-cancel-btn{font-family:'Segoe UI',sans-serif;font-size:10.5px;background:transparent;border:1px solid #d4cfc7;padding:4px 10px;border-radius:7px;color:#5a5550;cursor:pointer}
+
+/* ── Bottom: bidir arrows + platform cards ── */
+.platforms-section{display:flex;align-items:flex-start;margin-bottom:0}
+.plat-pad-l{width:268px;flex-shrink:0}
+.plat-pad-r{width:268px;flex-shrink:0}
+.plat-cards{display:flex;align-items:flex-start;justify-content:center;gap:40px;padding:0 40px}
+.plat-col{display:flex;flex-direction:column;align-items:center}
+.plat-card{padding:13px 24px;border-radius:13px;background:#fff;border:1px solid #e87840;font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:600;color:#b84018;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.09);display:flex;align-items:center;gap:10px}
+.plat-logo{width:28px;height:28px;flex-shrink:0;object-fit:contain}
+
+/* ── Use your Prompts title ── */
+.plat-center{flex:1}
+.use-prompts-title{font-family:'Segoe UI',sans-serif;font-size:18px;font-weight:600;color:#3d3930;letter-spacing:-0.02em;padding:0 8px;white-space:nowrap;margin-top:12px}
+
+/* ── AI Prompts group box ── */
+.ai-prompts-group{position:relative;background:linear-gradient(180deg,#ffffff 0%,#faf8f5 100%);border:1px solid rgba(0,0,0,0.08);border-radius:24px;padding:24px 32px;box-shadow:0 4px 24px rgba(0,0,0,0.14),0 1px 3px rgba(0,0,0,0.08)}
+.ai-prompts-top{position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.testing-eval-box{padding:9px 20px;border-radius:13px;background:#e8f1fb;border:1px solid #5a9fd4;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:#1a4a7a;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.07);cursor:pointer;transition:filter 0.15s,transform 0.15s,box-shadow 0.15s}
+.testing-eval-box:hover{filter:brightness(0.96);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
+.ai-prompts-header{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;white-space:nowrap}
+.ai-prompts-header h2{font-family:'Segoe UI',sans-serif;font-size:22px;font-weight:700;color:#1a1714;letter-spacing:-0.03em;margin:0}
+
+/* ── Foundation row ── */
+.foundation{margin-top:28px;border:1.5px dashed #96aabf;border-radius:20px;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:relative;flex-wrap:wrap;gap:16px}
+.foundation-label{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c4d1e2;padding:0 14px;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:700;color:#2a3a4a;white-space:nowrap;letter-spacing:-0.01em}
+.found-item{display:flex;align-items:center;gap:10px}
+.found-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.5);flex-shrink:0}
+.found-icon svg{width:20px;height:20px;color:#4a6478}
+.found-text{font-family:'Segoe UI',sans-serif;font-size:14px;font-weight:600;color:#2a3a4a}
+.found-sub{font-size:11px;color:#4a6478;font-weight:400}
+.found-title{font-family:'Segoe UI',sans-serif;font-size:16px;font-weight:700;color:#2a3a4a;letter-spacing:-0.02em}
+
+/* ── Grouped color variants ── */
+/* Prompt source cards: soft azure blue (both cards same color) */
+.ps-card.color-prompt{background:#fefbe8;border-color:#d4b830;color:#7a6010}
+/* Input IO boxes: warm coral rose */
+.io-box.color-input{background:#fdeef2;border-color:#f0a0b4;color:#8a3050}
+/* Output IO boxes: cool mint */
+.io-box.color-output{background:#edfaf2;border-color:#78cc98;color:#1a6840}
+/* Platform card brand colors */
+.plat-card.color-powerapps{background:#f8eaf8;border-color:#742774;color:#520b56}
+.plat-card.color-powerautomate{background:#eaeffc;border-color:#2764e7;color:#102784}
+.plat-card.color-copilotstudio{background:#ede8fd;border-color:#8b52f4;color:#4b1a8a}
+
+/* ── Hover effects for clickables ── */
+.ps-card,.io-box,.plat-card,.found-item{transition:filter 0.15s,transform 0.15s,box-shadow 0.15s}
+.ps-card:hover,.io-box:hover,.plat-card:hover{filter:brightness(0.96);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12)}
+.found-item:hover{filter:brightness(0.9)}
+
+/* ── Dimmable sections ── */
+.prompt-sources,.inputs-col,.prompt-platform,.outputs-col,.platforms-section,.foundation,.testing-eval-box{transition:filter 0.35s ease,opacity 0.35s ease}
+
+@media(max-width:900px){
+  .mid-row{flex-direction:column}
+  .inputs-col,.outputs-col{width:100%;flex-direction:row}
+  .h-arrow-grp{flex-direction:row}
+}
+</style>
+</head>
+<body>
+<a href="index.html" class="back-btn">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  Back
+</a>
+<div class="diagram">
+
+  <!-- ═══ TOP: Platform integrations ═══ -->
+  <div class="platforms-section">
+    <div class="plat-pad-l"></div>
+    <div class="plat-center">
+      <div class="plat-cards">
+
+        <div class="use-prompts-title">Use your Prompts</div>
+
+        <div class="plat-col">
+          <div class="plat-card color-powerapps" data-popup="power-apps"><img src="shared/images/power-apps.svg" class="plat-logo" alt="">Power Apps</div>
+          <svg width="16" height="36" viewBox="0 0 16 36"><polygon points="3,8 8,2 13,8" fill="#8aabc8"/><line x1="8" y1="8" x2="8" y2="28" stroke="#8aabc8" stroke-width="2"/><polygon points="3,28 8,34 13,28" fill="#8aabc8"/></svg>
+        </div>
+
+        <div class="plat-col">
+          <div class="plat-card color-powerautomate" data-popup="power-automate"><img src="shared/images/power-automate.svg" class="plat-logo" alt="">Power Automate</div>
+          <svg width="16" height="36" viewBox="0 0 16 36"><polygon points="3,8 8,2 13,8" fill="#8aabc8"/><line x1="8" y1="8" x2="8" y2="28" stroke="#8aabc8" stroke-width="2"/><polygon points="3,28 8,34 13,28" fill="#8aabc8"/></svg>
+        </div>
+
+        <div class="plat-col">
+          <div class="plat-card color-copilotstudio" data-popup="copilot-studio"><img src="shared/images/copilot-studio.svg" class="plat-logo" alt="">Copilot Studio</div>
+          <svg width="16" height="36" viewBox="0 0 16 36"><polygon points="3,8 8,2 13,8" fill="#8aabc8"/><line x1="8" y1="8" x2="8" y2="28" stroke="#8aabc8" stroke-width="2"/><polygon points="3,28 8,34 13,28" fill="#8aabc8"/></svg>
+        </div>
+
+      </div>
+    </div>
+    <div class="plat-pad-r"></div>
+  </div>
+
+  <!-- ═══ AI PROMPTS GROUP ═══ -->
+  <div class="ai-prompts-group">
+  <div class="ai-prompts-top">
+    <div class="prompt-sources">
+      <div class="ps-card color-prompt" data-popup="build-own">Build your own Prompt</div>
+      <div class="ps-card color-prompt" data-popup="prebuilt">Pre-built Prompts</div>
+    </div>
+    <div class="ai-prompts-header">
+      <img src="Images/AI Prompts Icon.png" alt="AI Prompts" style="width:28px;height:28px;object-fit:contain">
+      <h2>AI Prompts</h2>
+    </div>
+    <div class="testing-eval-box" data-popup="testing">Testing &amp; Evaluation</div>
+  </div>
+
+  <!-- ═══ MID: Inputs | Platform | Outputs ═══ -->
+  <div class="mid-row">
+
+    <!-- Inputs -->
+    <div class="inputs-col">
+      <div class="io-box color-input" data-popup="input-text">Input Text</div>
+      <div class="io-box color-input" data-popup="input-docs">Input Documents</div>
+      <div class="io-box color-input" data-popup="dataverse">Dataverse Grounding</div>
+    </div>
+
+    <!-- Arrows in -->
+    <div class="h-arrow-grp">
+      <svg width="56" height="56" viewBox="0 0 56 56"><line x1="2" y1="28" x2="47" y2="28" stroke="#8aabc8" stroke-width="2.5"/><polygon points="47,22 56,28 47,34" fill="#8aabc8"/></svg>
+      <svg width="56" height="56" viewBox="0 0 56 56"><line x1="2" y1="28" x2="47" y2="28" stroke="#8aabc8" stroke-width="2.5"/><polygon points="47,22 56,28 47,34" fill="#8aabc8"/></svg>
+      <svg width="56" height="56" viewBox="0 0 56 56"><line x1="2" y1="28" x2="47" y2="28" stroke="#8aabc8" stroke-width="2.5"/><polygon points="47,22 56,28 47,34" fill="#8aabc8"/></svg>
+    </div>
+
+    <!-- Central prompt platform -->
+    <div class="prompt-platform">
+
+      <!-- Window bar -->
+      <div class="pw-bar">
+        <div class="pw-icon">
+          <img src="Images/AI Prompts Icon.png" alt="AI Prompts">
+        </div>
+        <div class="pw-title">Review Document and Extract Data</div>
+      </div>
+
+      <!-- Two-panel editor -->
+      <div class="pw-editor">
+
+        <!-- Left: Instructions -->
+        <div class="pw-panel" data-popup="instructions">
+          <div class="pw-panel-hdr">
+            <span class="pw-panel-title">Instructions</span>
+            <div class="pw-tags">
+              <span class="pw-tag model">&#8942; &nbsp; Model: GPT-4.1 &or;</span>
+            </div>
+          </div>
+          <div class="inst-block">
+            <div class="inst-bold">You are tasked with reviewing document authenticity and extracting data.</div>
+            <div class="inst-sub">### Instructions:</div>
+            <div class="inst-bold">1. REVIEW THE DOCUMENT: Carefully read through to identify:</div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              The word "Centrelink" or "Department of Veterans' Affairs"
+            </div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Document title should NOT be "PAYG Payment summary"
+            </div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              A reference number &nbsp; &nbsp;
+              <div class="inst-cb" style="margin-left:4px"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              &nbsp; A customer name
+            </div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              A postal address &nbsp; &nbsp;
+              <div class="inst-cb" style="margin-left:4px"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              &nbsp; A date of issue
+            </div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Consistent formatting and grammar throughout
+            </div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Official contact details (e.g. phone numbers, web links)
+            </div>
+            <div class="inst-item">
+              <div class="inst-cb"><svg width="8" height="8" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              High-resolution logos, matching details across sections
+            </div>
+            <div style="margin-top:6px;font-size:9.5px;color:#8a8477">Please list which items were found and mark with &#10003; or &#10007;, then give your score.</div>
+          </div>
+        </div>
+
+        <!-- Right: Model response -->
+        <div class="pw-panel" data-popup="model-response">
+          <div class="pw-panel-hdr">
+            <span class="pw-panel-title">Model response</span>
+            <span class="pw-tag output">Output: Text &or;</span>
+          </div>
+          <div class="resp-block">
+            <div class="resp-score">1. Document Authenticity Score: 8/10</div>
+            <div class="resp-subtitle">2. Rationale:</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>The word "Centrelink" is present.</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>Document title is "Income Statement" (NOT "PAYG Payment summary").</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>Reference number is present ("123 456 789").</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>Customer name is present ("Oliver Brown").</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>A postal address is present ("40 Martin Street, 2000 Sydney").</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>A date of issue is present ("19 February 2026").</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>Australian coat of arms logo is present.</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>Consistent formatting and grammar throughout.</div>
+            <div class="resp-item"><span class="resp-no">&#10007;</span>Official contact details are NOT visible on this page.</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>High-resolution logos and graphics present.</div>
+            <div class="resp-item"><span class="resp-ok">&#10003;</span>Matching details across elements (name/address consistent).</div>
+            <div class="resp-note">The only missing element is the official contact details. All other elements are present and appear authentic.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="pw-footer">
+        <button class="pw-add-btn">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="2"><line x1="5.5" y1="1" x2="5.5" y2="10"/><line x1="1" y1="5.5" x2="10" y2="5.5"/></svg>
+          Add content
+        </button>
+        <span class="pw-inp-tag">&#8594; 2 inputs</span>
+        <div class="pw-meta">6494 ms &nbsp; &middot; &nbsp; 6 Copilot credits</div>
+        <button class="pw-save-btn">&#128190; Save</button>
+        <button class="pw-cancel-btn">Cancel</button>
+      </div>
+
+    </div><!-- end .prompt-platform -->
+
+    <!-- Arrows out -->
+    <div class="h-arrow-grp">
+      <svg width="56" height="56" viewBox="0 0 56 56"><line x1="2" y1="28" x2="47" y2="28" stroke="#8aabc8" stroke-width="2.5"/><polygon points="47,22 56,28 47,34" fill="#8aabc8"/></svg>
+      <svg width="56" height="56" viewBox="0 0 56 56"><line x1="2" y1="28" x2="47" y2="28" stroke="#8aabc8" stroke-width="2.5"/><polygon points="47,22 56,28 47,34" fill="#8aabc8"/></svg>
+      <svg width="56" height="56" viewBox="0 0 56 56"><line x1="2" y1="28" x2="47" y2="28" stroke="#8aabc8" stroke-width="2.5"/><polygon points="47,22 56,28 47,34" fill="#8aabc8"/></svg>
+    </div>
+
+    <!-- Outputs -->
+    <div class="outputs-col">
+      <div class="io-box color-output" data-popup="text-output">Text Output</div>
+      <div class="io-box color-output" data-popup="json-output">JSON</div>
+      <div class="io-box color-output" data-popup="docs-output">Documents</div>
+    </div>
+
+  </div><!-- end .mid-row -->
+
+  </div><!-- end .ai-prompts-group -->
+
+  <!-- ═══ FOUNDATION ═══ -->
+  <div class="foundation">
+    <div class="foundation-label">Platform Services</div>
+
+    <div class="found-item" data-popup="ai-models">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <div><div class="found-text">AI Models</div><div class="found-sub">GPT-4.1, Claude, etc.</div></div>
+    </div>
+
+    <div class="found-item" data-popup="content-safety">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div><div class="found-text">Content Safety</div><div class="found-sub">Filters, guardrails</div></div>
+    </div>
+
+    <div class="found-item" data-popup="lifecycle">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      </div>
+      <div><div class="found-text">Life cycle management</div><div class="found-sub">Versioning, ALM</div></div>
+    </div>
+
+    <div class="found-item" data-popup="activity-monitoring">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div><div class="found-text">Activity Monitoring</div><div class="found-sub">Audit, usage tracking</div></div>
+    </div>
+
+  </div>
+
+</div><!-- end .diagram -->
+
+<!-- Popup overlay -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-card" id="popupCard">
+    <button class="popup-close" id="popupClose">&#x2715;</button>
+    <div class="popup-accent" id="popupAccent"></div>
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-subtitle" id="popupSubtitle"></div>
+    <div class="popup-body">
+      <div>
+        <div class="popup-section-label">Key Capabilities</div>
+        <ul class="popup-list" id="popupList"></ul>
+      </div>
+      <div>
+        <div class="popup-section-label">Example Scenarios</div>
+        <ul class="popup-list" id="popupScenarios"></ul>
+      </div>
+    </div>
+    <div class="popup-screenshots" id="popupScreenshots"></div>
+  </div>
+</div>
+
+<!-- Legend panel -->
+<div class="legend-panel">
+  <span class="legend-title">Focus</span>
+  <div class="legend-sep"></div>
+  <button class="leg active" data-target="prompt-sources">Prompt Sources</button>
+  <button class="leg active" data-target="inputs-col">Inputs</button>
+  <button class="leg active" data-target="prompt-platform">Prompt Editor</button>
+  <button class="leg active" data-target="outputs-col">Outputs</button>
+  <button class="leg active" data-target="testing-eval-box">Testing &amp; Evaluation</button>
+  <button class="leg active" data-target="platforms-section">Use your Prompts</button>
+  <button class="leg active" data-target="foundation">Platform Services</button>
+  <div class="legend-sep"></div>
+  <button class="leg active" id="allBtn">All</button>
+</div>
+
+<!-- Branding -->
+<div class="diagram-brand">
+  <span class="diagram-brand-text">Created by</span>
+  <img class="diagram-brand-logo" src="shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
+</div>
+
+<script>
+var popupData = {
+  'build-own': {
+    title: 'Build your own Prompt',
+    subtitle: 'Author custom AI prompts tailored to your specific business process',
+    accent: '#5abcd4',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Build%20your%20own%20Prompt%20-%2001%20-%20Custom%20Prompt.jpg',
+        desc: 'Prompts let you instruct the generative AI model to behave in a certain way or to perform a specific task. By carefully crafting a prompt, you can generate responses that suit your specific business needs.'
+      },
+      {
+        src: 'Images/ai-prompts/Build%20your%20own%20Prompt%20-%2002%20-%20Prompt%20Assistant.jpg',
+        desc: 'To help you move faster and reduce the time spent writing prompts from scratch, you can use prompt assistant to draft your prompts directly within the tool. Prompt assistant provides intelligent suggestions based on your intent, helping you frame effective prompts while applying prompt engineering best practices.'
+      }
+    ]
+  },
+  prebuilt: {
+    title: 'Pre-built Prompts',
+    subtitle: 'Ready-to-use prompt templates for common AI tasks, curated by Microsoft',
+    accent: '#5abcd4',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Pre-built%20Prompts%20-%2001%20-%20Templates.jpg',
+        desc: 'The prompt library feature provides a collection of predesigned prompts, serving as templates to expedite the creation of AI prompts. This resource accelerates development, and ensures best practices are followed in prompt engineering.'
+      },
+      {
+        src: 'Images/ai-prompts/Pre-built%20Prompts%20-%2002%20-%20Credit%20Card%20Reader.jpg',
+        desc: 'The "Credit card reader" pre-built prompt open in the AI Prompt editor. The instruction directs the model to extract four fields from an image input: Card Number (16-digit sequence), Cardholder Name, Expiration Date (MM/YY format), and Issuer Information (Visa or Mastercard).'
+      }
+    ]
+  },
+  'input-text': {
+    title: 'Input Text',
+    subtitle: 'Pass free-form or structured text directly into the AI prompt at runtime',
+    accent: '#56aa56',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Input%20Text%20-%2001.jpg',
+        desc: 'When you use text inputs, you can perform actions on text content that dynamically pass to the prompt at runtime.'
+      }
+    ]
+  },
+  'input-docs': {
+    title: 'Input Documents',
+    subtitle: 'Supply PDF, Word, or image files as grounding context for the AI prompt',
+    accent: '#56aa56',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Input%20Documents.jpg',
+        desc: 'When you use image or document inputs, you can perform actions on file content that dynamically pass to the prompt at run time, such as file summarization, file categorization, extracting file information (both textual and visual), asking questions on file, and many more. It\'s also possible to combine both text and document or image inputs in the same prompt.'
+      }
+    ]
+  },
+  dataverse: {
+    title: 'Dataverse Grounding',
+    subtitle: 'Ground the AI prompt in live, structured business data from Microsoft Dataverse',
+    accent: '#56aa56',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Dataverse%20Grounding.jpg',
+        desc: 'This is where data Retrieval Augmented Generation (RAG) allows you to provide external information to augment the knowledge of the model. This augmentation can result in getting the answers you need.'
+      }
+    ]
+  },
+  'text-output': {
+    title: 'Text Output',
+    subtitle: 'Receive the AI response as natural language text, ready for display or further processing',
+    accent: '#56aa56',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Text%20Output.jpg',
+        desc: 'y default, the prompt generates text as response. This is useful for scenarios where you want to display the AI response directly to users, such as in a chatbot, or when you want the AI to generate content like summaries, explanations, or recommendations. The text output can be formatted in various ways (bullet points, numbered lists, prose) based on your instructions in the prompt.'
+      }
+    ]
+  },
+  'json-output': {
+    title: 'JSON Output',
+    subtitle: 'Receive a structured JSON response for direct mapping to data fields or APIs',
+    accent: '#56aa56',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/JSON.jpg',
+        desc: 'The JSON output lets you generate a JSON structure for your prompt response instead of text. JSON makes it easier to process responses with multiple elements in agents, cloud flows, or apps.'
+      }
+    ]
+  },
+  'docs-output': {
+    title: 'Documents Output',
+    subtitle: 'The output of the Document feature lets you generate a Microsoft Word document for your prompt response instead of text. The generated document follows a layout that needs to be provided in the document output settings.',
+    accent: '#56aa56',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Documents%20Output.jpg',
+        desc: 'The AI Prompt editor for "DVAC - Extract Information into Document" using GPT-5 chat with Document output. The instructions query three Dataverse tables (Case Notes, Risk Assessments, Contacts) filtered by a Start Date and End Date to answer specific reporting questions. The Model response panel shows a generated document with a download link (Output.docx) and a structured table summarising: number of case notes, contacts with risk assessments, and a gender breakdown of contacts across the reporting period.'
+      }
+    ]
+  },
+  instructions: {
+    title: 'Prompt Instructions',
+    subtitle: 'Natural language directives that define what the AI should do and how to respond',
+    accent: '#2b7dc2',
+    screenshots: [
+      {
+        src: '',
+        desc: 'The Instructions panel is where you write natural language directives that define exactly what the AI should do and how to respond. Specify the output format (bullet list, JSON, numbered steps, prose, score), define a persona for the AI to adopt, include few-shot examples to anchor model behaviour, and add safety rules for what the AI must never say, assume, or omit.'
+      }
+    ]
+  },
+  'model-response': {
+    title: 'Model Response',
+    subtitle: 'The AI output returned after processing your prompt and its inputs',
+    accent: '#2b7dc2',
+    screenshots: [
+      {
+        src: '',
+        desc: 'The Model Response panel displays the AI output in real time during prompt authoring and evaluation. The format matches the configured output type: text, JSON, or document content. Token count and latency metadata are shown for cost and performance monitoring. Grounded responses include citations linking back to the source document or data record.'
+      }
+    ]
+  },
+  'power-apps': {
+    title: 'Power Apps',
+    subtitle: 'Embed AI prompt capabilities directly inside your custom business applications',
+    accent: '#e87840',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Power%20Apps.jpg',
+        desc: 'Once you create and test your prompts using the prompt builder, you can use them within your application by calling them through Power Fx Functions. Custom prompts can be invoked as Power Fx function calls, this allows you to seamlessly integrate AI capabilities into your application.'
+      }
+    ]
+  },
+  'power-automate': {
+    title: 'Power Automate',
+    subtitle: 'Integrate AI prompts into automated multi-step workflows and processes',
+    accent: '#e87840',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Power%20Automate.jpg',
+        desc: 'You can add a prompt as an action in a Power Automate flow so it\'s possible to generate text from it inside an automated process.'
+      }
+    ]
+  },
+  'copilot-studio': {
+    title: 'Copilot Studio',
+    subtitle: 'Use AI prompts as reusable tools inside conversational and autonomous agents',
+    accent: '#e87840',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Copilot%20Studio.jpg',
+        desc: 'Use prompt in Copilot Studio to natural language actions as copilot extensions. These actions use the generative AI models from AI Builder and natural language understanding to address specific scenarios for your copilots.'
+      }
+    ]
+  },
+  'ai-models': {
+    title: 'AI Models',
+    subtitle: 'The foundation language models that power all AI prompt execution',
+    accent: '#4a6478',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/AI%20Models.jpg',
+        desc: 'You can change the model by selecting Model at the top of the prompt builder. The dropdown menu allows you to select from the generative AI models that generate answers to your custom prompt.'
+      }
+    ]
+  },
+  'content-safety': {
+    title: 'Content Safety',
+    subtitle: 'Built-in responsible AI filters that protect every prompt run automatically',
+    accent: '#4a6478',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Content%20Safety.jpg',
+        desc: 'Set the content moderation level for the prompt by using the slider. With a lower moderation level, your prompt can provide more answers.'
+      }
+    ]
+  },
+  lifecycle: {
+    title: 'Life Cycle Management',
+    subtitle: 'Version, govern, and promote AI prompts across Dev, Test, and Production environments',
+    accent: '#4a6478',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Life%20cycle%20management%20-%2001%20-%20Solutions.jpg',
+        desc: 'You can distribute a prompt as a solution component. After you create a prompt in prompt builder, make it available for other environments to use.'
+      },
+      {
+        src: 'Images/ai-prompts/Life%20cycle%20management%20-%2002%20-%20Pipelines.jpg',
+        desc: 'As prompts can be distributed across environments using solutions, you can automate your prompt lifecycle in the same way you would for other platform components. The Power Platform Pipelines let you deploy a solution between Environments, eg. from "Dev to Test". '
+      }
+    ]
+  },
+  testing: {
+    title: 'Testing & Evaluation',
+    subtitle: 'Validate and measure AI prompt quality before and after deployment',
+    accent: '#5a9fd4',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Testing%20and%20Evaluation.jpg',
+        desc: 'Test your prompts with real inputs directly in the prompt builder to verify outputs before saving. Evaluate model responses against expected results, compare outputs across different model versions, and review token usage and latency to optimise for cost and performance.'
+      }
+    ]
+  },
+  'activity-monitoring': {
+    title: 'Activity Monitoring',
+    subtitle: 'Observe, audit, and optimise AI prompt usage in production',
+    accent: '#4a6478',
+    screenshots: [
+      {
+        src: 'Images/ai-prompts/Activity%20Monitoring%20-%2001%20-%20Activity%20List.jpg',
+        desc: 'The Power Automate Automation Center showing the "AI Builder activity" list. Each record represents a single prompt execution, with details including: Activity name, Status, Triggered by, Start time, Duration, and Consumption.'
+      },
+      {
+        src: 'Images/ai-prompts/Activity%20Monitoring%20-%2002%20-%20Activitiy%20Details.jpg',
+        desc: 'The detail view of a specific AI Builder activity run can be seen. It includes: Inputs (the prompt and its parameters), Outputs (the AI response), and Errors (if the prompt execution failed, the error message is shown here).'
+      }
+    ]
+  }
+};
+
+var classMap = {};
+</script>
+<script src="shared/diagram.js"></script>
+</body>
+</html>
