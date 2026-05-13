@@ -66,6 +66,12 @@ body{padding:48px 40px 64px}
 .card.live:hover .card-arrow{background:rgba(0,0,0,0.1)}
 .card-arrow svg{width:14px;height:14px;color:#4a4540}
 
+/* ── Footer ── */
+.footer{text-align:center;margin-top:40px}
+.footer-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:20px;background:rgba(255,255,255,0.55);border:1px solid rgba(0,0,0,0.1);font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:#4a6478;text-decoration:none;transition:background 0.15s,box-shadow 0.15s}
+.footer-btn:hover{background:rgba(255,255,255,0.85);box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.footer-btn svg{width:15px;height:15px;opacity:0.7}
+
 @media(max-width:640px){
   body{padding:32px 20px 48px}
   .header h1{font-size:24px}
@@ -165,5 +171,13 @@ body{padding:48px 40px 64px}
   </div>
 
 </div>
+
+<div class="footer">
+  <a class="footer-btn" href="published/index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="12 2 12 8 18 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+    Published Snapshots
+  </a>
+</div>
+
 </body>
 </html>
