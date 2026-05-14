@@ -4,7 +4,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Prompts - Platform Overview</title>
-<link rel="stylesheet" href="shared/diagram.css">
+<style>
+/* ── Reset & base ── */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100vw;height:100vh;overflow:hidden;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;position:relative}
+.diagram{width:1400px;padding:32px;box-sizing:border-box;position:absolute;transform-origin:top left}
+
+/* ── Clickable components ── */
+[data-popup]{cursor:pointer}
+[data-popup]:hover{filter:brightness(0.96);transform:translateY(-1px);transition:filter 0.15s,transform 0.15s}
+
+/* ── Popup overlay ── */
+.popup-overlay{position:fixed;inset:0;z-index:99999;background:rgba(10,20,40,0.6);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;backdrop-filter:blur(3px)}
+.popup-overlay.open{opacity:1;pointer-events:all}
+.popup-card{background:#fff;border-radius:24px;padding:clamp(28px,3vw,52px) clamp(32px,3.5vw,60px) clamp(32px,3.5vw,60px);width:80vw;max-height:80vh;overflow-y:auto;position:relative;transform:translateY(24px) scale(0.97);transition:transform 0.28s;box-shadow:0 32px 80px rgba(0,0,0,0.28)}
+.popup-overlay.open .popup-card{transform:translateY(0) scale(1)}
+.popup-close{position:absolute;top:clamp(12px,1.2vw,22px);right:clamp(12px,1.2vw,22px);width:clamp(28px,2.4vw,44px);height:clamp(28px,2.4vw,44px);border-radius:9px;border:none;background:rgba(0,0,0,0.06);cursor:pointer;font-size:clamp(15px,1.2vw,22px);line-height:1;color:#6b6560;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',sans-serif}
+.popup-close:hover{background:rgba(0,0,0,0.11)}
+.popup-accent{height:clamp(3px,0.4vw,6px);width:clamp(36px,3.5vw,64px);border-radius:2px;margin-bottom:clamp(12px,1.2vw,22px)}
+.popup-title{font-family:'Segoe UI',sans-serif;font-size:clamp(20px,1.8vw,34px);font-weight:700;color:#1a1714;margin-bottom:clamp(4px,0.5vw,8px)}
+.popup-subtitle{font-size:clamp(12px,1vw,19px);color:#8a8477;margin-bottom:clamp(16px,1.6vw,28px);font-family:'Segoe UI',sans-serif}.popup-body{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.6vw,28px)}
+.popup-body > div{background:#f8f6f3;border-radius:12px;padding:clamp(14px,1.3vw,22px);display:flex;flex-direction:column;gap:clamp(8px,0.8vw,14px)}
+.popup-section-label{font-size:clamp(10px,0.75vw,13px);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#8a8477;font-family:'Segoe UI',sans-serif;flex-shrink:0}
+.popup-list{list-style:none;display:flex;flex-direction:column;gap:clamp(6px,0.6vw,11px)}
+.popup-list li{display:flex;align-items:flex-start;gap:clamp(7px,0.7vw,13px);font-size:clamp(11px,0.9vw,16px);color:#3d3930;line-height:1.55;font-family:'Segoe UI',sans-serif}
+.popup-dot{width:clamp(6px,0.5vw,9px);height:clamp(6px,0.5vw,9px);border-radius:50%;margin-top:5px;flex-shrink:0}
+.popup-screenshots{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.6vw,28px)}
+.popup-screenshot-ph{background:#f0ede9;border:2px dashed #d4cfc7;border-radius:8px;height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#b0a898;font-family:'Segoe UI',sans-serif}
+.popup-screenshot-ph svg{opacity:0.4}
+.popup-screenshot-label{font-size:12px;font-weight:500}
+.popup-screenshot-item{background:#f8f6f3;border-radius:12px;padding:clamp(14px,1.3vw,22px);display:flex;flex-direction:column;gap:clamp(10px,1vw,16px)}
+.popup-screenshot-caption{font-size:clamp(11px,0.85vw,15px);color:#3d3930;line-height:1.5;font-family:'Segoe UI',sans-serif;margin:0;font-weight:500}
+.popup-screenshot-item img{width:100%;border-radius:8px;border:1px solid rgba(0,0,0,0.1);object-fit:cover;display:block}
+
+/* ── Image Lightbox ── */
+#imgLightbox{position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;backdrop-filter:blur(6px)}
+#imgLightbox.open{opacity:1;pointer-events:all}
+#imgLightboxImg{max-width:92vw;max-height:92vh;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,0.6);object-fit:contain;display:block}
+#imgLightboxClose{position:fixed;top:20px;right:24px;width:40px;height:40px;border-radius:10px;border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+#imgLightboxClose:hover{background:rgba(255,255,255,0.28)}
+.popup-screenshot-clickable{cursor:zoom-in}
+
+/* ── Legend Panel ── */
+.legend-panel{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px;padding:10px 18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.15),0 1px 4px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.07);font-family:'Segoe UI',sans-serif}
+.legend-title{font-size:11px;font-weight:700;color:#8a8477;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}
+.legend-sep{width:1px;height:18px;background:rgba(0,0,0,0.1);margin:0 4px;flex-shrink:0}
+.leg{padding:5px 13px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.1);background:rgba(60,55,48,0.05);font-size:12px;font-weight:600;color:#3d3930;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'Segoe UI',sans-serif}
+.leg.active{background:#3d3930;color:#fff;border-color:#3d3930}
+.leg:hover{opacity:0.8}
+.leg-reset{padding:5px 12px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.08);background:transparent;font-size:11px;font-weight:500;color:#8a8477;cursor:pointer;font-family:'Segoe UI',sans-serif;white-space:nowrap;transition:background 0.2s}
+.leg-reset:hover{background:rgba(0,0,0,0.05)}
+
+/* ── Back button ── */
+.back-btn{position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:10px;background:rgba(255,255,255,0.92);border:1px solid rgba(0,0,0,0.1);box-shadow:0 2px 12px rgba(0,0,0,0.12);cursor:pointer;text-decoration:none;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:#3d3930;transition:background 0.15s,box-shadow 0.15s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.back-btn:hover{background:rgba(255,255,255,1);box-shadow:0 4px 20px rgba(0,0,0,0.18)}
+.back-btn svg{flex-shrink:0}
+
+/* ── Bottom-right branding ── */
+.diagram-brand{position:fixed;bottom:16px;right:20px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px;padding:7px 14px;box-shadow:0 4px 24px rgba(0,0,0,0.15),0 1px 4px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.07)}
+.diagram-brand-text{font-size:10px;font-weight:600;color:#8a8477;white-space:nowrap;letter-spacing:0.02em;font-family:'Segoe UI',sans-serif}
+.diagram-brand-logo{height:20px;width:auto}
+
+/* ── Dimmed / Focus state ── */
+.dimmed{filter:blur(5px);opacity:0.5;pointer-events:none}
+
+</style>
 <style>
 body{background:#c4d1e2}
 
@@ -134,6 +199,7 @@ body{background:#c4d1e2}
 </style>
 </head>
 <body>
+<div style="position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.72);color:#fff;font-family:'Segoe UI',sans-serif;font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;z-index:9999;pointer-events:none;letter-spacing:0.03em;">Snapshot 2026-05-14</div>
 <a href="index.html" class="back-btn">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   Back
@@ -149,17 +215,17 @@ body{background:#c4d1e2}
         <div class="use-prompts-title">Use your Prompts</div>
 
         <div class="plat-col">
-          <div class="plat-card color-powerapps" data-popup="power-apps"><img src="shared/images/power-apps.svg" class="plat-logo" alt="">Power Apps</div>
+          <div class="plat-card color-powerapps" data-popup="power-apps"><img src="../shared/images/power-apps.svg" class="plat-logo" alt="">Power Apps</div>
           <svg width="16" height="36" viewBox="0 0 16 36"><polygon points="3,8 8,2 13,8" fill="#8aabc8"/><line x1="8" y1="8" x2="8" y2="28" stroke="#8aabc8" stroke-width="2"/><polygon points="3,28 8,34 13,28" fill="#8aabc8"/></svg>
         </div>
 
         <div class="plat-col">
-          <div class="plat-card color-powerautomate" data-popup="power-automate"><img src="shared/images/power-automate.svg" class="plat-logo" alt="">Power Automate</div>
+          <div class="plat-card color-powerautomate" data-popup="power-automate"><img src="../shared/images/power-automate.svg" class="plat-logo" alt="">Power Automate</div>
           <svg width="16" height="36" viewBox="0 0 16 36"><polygon points="3,8 8,2 13,8" fill="#8aabc8"/><line x1="8" y1="8" x2="8" y2="28" stroke="#8aabc8" stroke-width="2"/><polygon points="3,28 8,34 13,28" fill="#8aabc8"/></svg>
         </div>
 
         <div class="plat-col">
-          <div class="plat-card color-copilotstudio" data-popup="copilot-studio"><img src="shared/images/copilot-studio.svg" class="plat-logo" alt="">Copilot Studio</div>
+          <div class="plat-card color-copilotstudio" data-popup="copilot-studio"><img src="../shared/images/copilot-studio.svg" class="plat-logo" alt="">Copilot Studio</div>
           <svg width="16" height="36" viewBox="0 0 16 36"><polygon points="3,8 8,2 13,8" fill="#8aabc8"/><line x1="8" y1="8" x2="8" y2="28" stroke="#8aabc8" stroke-width="2"/><polygon points="3,28 8,34 13,28" fill="#8aabc8"/></svg>
         </div>
 
@@ -176,7 +242,7 @@ body{background:#c4d1e2}
       <div class="ps-card color-prompt" data-popup="prebuilt">Pre-built Prompts</div>
     </div>
     <div class="ai-prompts-header">
-      <img src="Images/AI Prompts Icon.png" alt="AI Prompts" style="width:28px;height:28px;object-fit:contain">
+      <img src="../Images/AI Prompts Icon.png" alt="AI Prompts" style="width:28px;height:28px;object-fit:contain">
       <h2>AI Prompts</h2>
     </div>
     <div class="testing-eval-box" data-popup="testing">Testing &amp; Evaluation</div>
@@ -205,7 +271,7 @@ body{background:#c4d1e2}
       <!-- Window bar -->
       <div class="pw-bar">
         <div class="pw-icon">
-          <img src="Images/AI Prompts Icon.png" alt="AI Prompts">
+          <img src="../Images/AI Prompts Icon.png" alt="AI Prompts">
         </div>
         <div class="pw-title">Review Document and Extract Data</div>
       </div>
@@ -395,7 +461,7 @@ body{background:#c4d1e2}
 <!-- Branding -->
 <div class="diagram-brand">
   <span class="diagram-brand-text">Created by</span>
-  <img class="diagram-brand-logo" src="shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
+  <img class="diagram-brand-logo" src="../shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
 </div>
 
 <script>
@@ -406,11 +472,11 @@ var popupData = {
     accent: '#5abcd4',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Build%20your%20own%20Prompt%20-%2001%20-%20Custom%20Prompt.jpg',
+        src: '../Images/ai-prompts/Build%20your%20own%20Prompt%20-%2001%20-%20Custom%20Prompt.jpg',
         desc: 'Prompts let you instruct the generative AI model to behave in a certain way or to perform a specific task. By carefully crafting a prompt, you can generate responses that suit your specific business needs.'
       },
       {
-        src: 'Images/ai-prompts/Build%20your%20own%20Prompt%20-%2002%20-%20Prompt%20Assistant.jpg',
+        src: '../Images/ai-prompts/Build%20your%20own%20Prompt%20-%2002%20-%20Prompt%20Assistant.jpg',
         desc: 'To help you move faster and reduce the time spent writing prompts from scratch, you can use prompt assistant to draft your prompts directly within the tool. Prompt assistant provides intelligent suggestions based on your intent, helping you frame effective prompts while applying prompt engineering best practices.'
       }
     ]
@@ -421,11 +487,11 @@ var popupData = {
     accent: '#5abcd4',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Pre-built%20Prompts%20-%2001%20-%20Templates.jpg',
+        src: '../Images/ai-prompts/Pre-built%20Prompts%20-%2001%20-%20Templates.jpg',
         desc: 'The prompt library feature provides a collection of predesigned prompts, serving as templates to expedite the creation of AI prompts. This resource accelerates development, and ensures best practices are followed in prompt engineering.'
       },
       {
-        src: 'Images/ai-prompts/Pre-built%20Prompts%20-%2002%20-%20Credit%20Card%20Reader.jpg',
+        src: '../Images/ai-prompts/Pre-built%20Prompts%20-%2002%20-%20Credit%20Card%20Reader.jpg',
         desc: 'The "Credit card reader" pre-built prompt open in the AI Prompt editor. The instruction directs the model to extract four fields from an image input: Card Number (16-digit sequence), Cardholder Name, Expiration Date (MM/YY format), and Issuer Information (Visa or Mastercard).'
       }
     ]
@@ -436,7 +502,7 @@ var popupData = {
     accent: '#56aa56',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Input%20Text%20-%2001.jpg',
+        src: '../Images/ai-prompts/Input%20Text%20-%2001.jpg',
         desc: 'When you use text inputs, you can perform actions on text content that dynamically pass to the prompt at runtime.'
       }
     ]
@@ -447,7 +513,7 @@ var popupData = {
     accent: '#56aa56',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Input%20Documents.jpg',
+        src: '../Images/ai-prompts/Input%20Documents.jpg',
         desc: 'When you use image or document inputs, you can perform actions on file content that dynamically pass to the prompt at run time, such as file summarization, file categorization, extracting file information (both textual and visual), asking questions on file, and many more. It\'s also possible to combine both text and document or image inputs in the same prompt.'
       }
     ]
@@ -458,7 +524,7 @@ var popupData = {
     accent: '#56aa56',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Dataverse%20Grounding.jpg',
+        src: '../Images/ai-prompts/Dataverse%20Grounding.jpg',
         desc: 'This is where data Retrieval Augmented Generation (RAG) allows you to provide external information to augment the knowledge of the model. This augmentation can result in getting the answers you need.'
       }
     ]
@@ -469,7 +535,7 @@ var popupData = {
     accent: '#56aa56',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Text%20Output.jpg',
+        src: '../Images/ai-prompts/Text%20Output.jpg',
         desc: 'y default, the prompt generates text as response. This is useful for scenarios where you want to display the AI response directly to users, such as in a chatbot, or when you want the AI to generate content like summaries, explanations, or recommendations. The text output can be formatted in various ways (bullet points, numbered lists, prose) based on your instructions in the prompt.'
       }
     ]
@@ -480,7 +546,7 @@ var popupData = {
     accent: '#56aa56',
     screenshots: [
       {
-        src: 'Images/ai-prompts/JSON.jpg',
+        src: '../Images/ai-prompts/JSON.jpg',
         desc: 'The JSON output lets you generate a JSON structure for your prompt response instead of text. JSON makes it easier to process responses with multiple elements in agents, cloud flows, or apps.'
       }
     ]
@@ -491,7 +557,7 @@ var popupData = {
     accent: '#56aa56',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Documents%20Output.jpg',
+        src: '../Images/ai-prompts/Documents%20Output.jpg',
         desc: 'The AI Prompt editor for "DVAC - Extract Information into Document" using GPT-5 chat with Document output. The instructions query three Dataverse tables (Case Notes, Risk Assessments, Contacts) filtered by a Start Date and End Date to answer specific reporting questions. The Model response panel shows a generated document with a download link (Output.docx) and a structured table summarising: number of case notes, contacts with risk assessments, and a gender breakdown of contacts across the reporting period.'
       }
     ]
@@ -502,7 +568,7 @@ var popupData = {
     accent: '#e87840',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Power%20Apps.jpg',
+        src: '../Images/ai-prompts/Power%20Apps.jpg',
         desc: 'Once you create and test your prompts using the prompt builder, you can use them within your application by calling them through Power Fx Functions. Custom prompts can be invoked as Power Fx function calls, this allows you to seamlessly integrate AI capabilities into your application.'
       }
     ]
@@ -513,7 +579,7 @@ var popupData = {
     accent: '#e87840',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Power%20Automate.jpg',
+        src: '../Images/ai-prompts/Power%20Automate.jpg',
         desc: 'You can add a prompt as an action in a Power Automate flow so it\'s possible to generate text from it inside an automated process.'
       }
     ]
@@ -524,7 +590,7 @@ var popupData = {
     accent: '#e87840',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Copilot%20Studio.jpg',
+        src: '../Images/ai-prompts/Copilot%20Studio.jpg',
         desc: 'Use prompt in Copilot Studio to natural language actions as copilot extensions. These actions use the generative AI models from AI Builder and natural language understanding to address specific scenarios for your copilots.'
       }
     ]
@@ -535,7 +601,7 @@ var popupData = {
     accent: '#4a6478',
     screenshots: [
       {
-        src: 'Images/ai-prompts/AI%20Models.jpg',
+        src: '../Images/ai-prompts/AI%20Models.jpg',
         desc: 'You can change the model by selecting Model at the top of the prompt builder. The dropdown menu allows you to select from the generative AI models that generate answers to your custom prompt.'
       }
     ]
@@ -546,7 +612,7 @@ var popupData = {
     accent: '#4a6478',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Content%20Safety.jpg',
+        src: '../Images/ai-prompts/Content%20Safety.jpg',
         desc: 'Set the content moderation level for the prompt by using the slider. With a lower moderation level, your prompt can provide more answers.'
       }
     ]
@@ -557,11 +623,11 @@ var popupData = {
     accent: '#4a6478',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Life%20cycle%20management%20-%2001%20-%20Solutions.jpg',
+        src: '../Images/ai-prompts/Life%20cycle%20management%20-%2001%20-%20Solutions.jpg',
         desc: 'You can distribute a prompt as a solution component. After you create a prompt in prompt builder, make it available for other environments to use.'
       },
       {
-        src: 'Images/ai-prompts/Life%20cycle%20management%20-%2002%20-%20Pipelines.jpg',
+        src: '../Images/ai-prompts/Life%20cycle%20management%20-%2002%20-%20Pipelines.jpg',
         desc: 'As prompts can be distributed across environments using solutions, you can automate your prompt lifecycle in the same way you would for other platform components. The Power Platform Pipelines let you deploy a solution between Environments, eg. from "Dev to Test". '
       }
     ]
@@ -572,7 +638,7 @@ var popupData = {
     accent: '#5a9fd4',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Testing%20and%20Evaluation.jpg',
+        src: '../Images/ai-prompts/Testing%20and%20Evaluation.jpg',
         desc: 'Test your prompts with real inputs directly in the prompt builder to verify outputs before saving. Evaluate model responses against expected results, compare outputs across different model versions, and review token usage and latency to optimise for cost and performance.'
       }
     ]
@@ -583,11 +649,11 @@ var popupData = {
     accent: '#4a6478',
     screenshots: [
       {
-        src: 'Images/ai-prompts/Activity%20Monitoring%20-%2001%20-%20Activity%20List.jpg',
+        src: '../Images/ai-prompts/Activity%20Monitoring%20-%2001%20-%20Activity%20List.jpg',
         desc: 'The Power Automate Automation Center showing the "AI Builder activity" list. Each record represents a single prompt execution, with details including: Activity name, Status, Triggered by, Start time, Duration, and Consumption.'
       },
       {
-        src: 'Images/ai-prompts/Activity%20Monitoring%20-%2002%20-%20Activitiy%20Details.jpg',
+        src: '../Images/ai-prompts/Activity%20Monitoring%20-%2002%20-%20Activitiy%20Details.jpg',
         desc: 'The detail view of a specific AI Builder activity run can be seen. It includes: Inputs (the prompt and its parameters), Outputs (the AI response), and Errors (if the prompt execution failed, the error message is shown here).'
       }
     ]
@@ -596,6 +662,149 @@ var popupData = {
 
 var classMap = {};
 </script>
-<script src="shared/diagram.js"></script>
+<script>
+/* Fit diagram to viewport */
+function fitDiagram() {
+  var d = document.querySelector('.diagram');
+  var legend = document.querySelector('.legend-panel');
+  var legendH = legend.offsetHeight + 32;
+  d.style.transform = 'scale(1)';
+  d.style.left = '0';
+  d.style.top = '0';
+  var dw = d.offsetWidth;
+  var dh = d.offsetHeight;
+  var availH = window.innerHeight - legendH;
+  var scale = Math.min(window.innerWidth / dw, availH / dh);
+  d.style.left = ((window.innerWidth - dw * scale) / 2) + 'px';
+  d.style.top = ((availH - dh * scale) / 2) + 'px';
+  d.style.transform = 'scale(' + scale + ')';
+}
+window.addEventListener('load', fitDiagram);
+window.addEventListener('resize', fitDiagram);
+
+/* Legend toggles */
+document.querySelectorAll('.leg').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var el = document.querySelector('.' + this.dataset.target);
+    var isActive = this.classList.toggle('active');
+    if (isActive) { el.classList.remove('dimmed'); }
+    else { el.classList.add('dimmed'); }
+  });
+});
+document.getElementById('allBtn').addEventListener('click', function() {
+  var legs = document.querySelectorAll('.leg:not(#allBtn)');
+  var allActive = Array.from(legs).every(function(b) { return b.classList.contains('active'); });
+  var turnOn = !allActive;
+  legs.forEach(function(btn) {
+    var el = document.querySelector('.' + btn.dataset.target);
+    if (turnOn) { btn.classList.add('active'); el.classList.remove('dimmed'); }
+    else { btn.classList.remove('active'); el.classList.add('dimmed'); }
+  });
+  this.classList.toggle('active', turnOn);
+});
+
+/* Wire up data-popup for class-mapped elements (each diagram defines classMap) */
+if (typeof classMap !== 'undefined') {
+  Object.keys(classMap).forEach(function(cls) {
+    var el = document.querySelector('.' + cls);
+    if (el) el.setAttribute('data-popup', classMap[cls]);
+  });
+}
+
+/* Lightbox */
+var lightbox = document.createElement('div');
+lightbox.id = 'imgLightbox';
+lightbox.innerHTML = '<img id="imgLightboxImg"><button id="imgLightboxClose">&#x2715;</button>';
+document.body.appendChild(lightbox);
+var lbImg = document.getElementById('imgLightboxImg');
+function openLightbox(src, alt) {
+  lbImg.src = src;
+  lbImg.alt = alt;
+  lightbox.classList.add('open');
+}
+function closeLightbox() { lightbox.classList.remove('open'); }
+document.getElementById('imgLightboxClose').addEventListener('click', function(e) { e.stopPropagation(); closeLightbox(); });
+lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
+
+/* Popup open/close */
+var overlay = document.getElementById('popupOverlay');
+function buildList(id, items, accent) {
+  var list = document.getElementById(id);
+  list.innerHTML = '';
+  items.forEach(function(p) {
+    var li = document.createElement('li');
+    var dot = document.createElement('span');
+    dot.className = 'popup-dot';
+    dot.style.background = accent;
+    li.appendChild(dot);
+    li.appendChild(document.createTextNode(p));
+    list.appendChild(li);
+  });
+}
+function openPopup(key) {
+  var d = popupData[key];
+  if (!d) return;
+  document.getElementById('popupAccent').style.background = d.accent;
+  document.getElementById('popupTitle').textContent = d.title;
+  document.getElementById('popupSubtitle').textContent = d.subtitle;
+
+  var body = document.querySelector('.popup-body');
+  var hasPoints = d.points && d.points.length;
+  if (hasPoints) {
+    buildList('popupList', d.points, d.accent);
+    buildList('popupScenarios', d.scenarios || [], d.accent);
+    body.style.display = '';
+  } else {
+    body.style.display = 'none';
+  }
+
+  var shots = document.getElementById('popupScreenshots');
+  shots.innerHTML = '';
+  shots.style.marginTop = hasPoints ? 'clamp(14px,1.6vw,28px)' : '0';
+  if (d.screenshots && d.screenshots.length) {
+    d.screenshots.forEach(function(s) {
+      var item = document.createElement('div');
+      item.className = 'popup-screenshot-item';
+      var cap = document.createElement('p');
+      cap.className = 'popup-screenshot-caption';
+      cap.textContent = s.desc;
+      item.appendChild(cap);
+      if (s.src) {
+        var img = document.createElement('img');
+        img.src = s.src;
+        img.alt = s.desc;
+        img.className = 'popup-screenshot-clickable';
+        img.addEventListener('click', function() { openLightbox(this.src, this.alt); });
+        item.appendChild(img);
+      } else {
+        var ph = document.createElement('div');
+        ph.className = 'popup-screenshot-ph';
+        ph.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="popup-screenshot-label">Screenshot coming soon</span>';
+        item.appendChild(ph);
+      }
+      shots.appendChild(item);
+    });
+    shots.style.display = '';
+  } else {
+    shots.style.display = 'none';
+  }
+
+  overlay.classList.add('open');
+}
+function closePopup() { overlay.classList.remove('open'); }
+
+document.getElementById('popupClose').addEventListener('click', closePopup);
+overlay.addEventListener('click', function(e) { if (e.target === overlay) closePopup(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePopup(); });
+
+document.querySelectorAll('[data-popup]').forEach(function(el) {
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    openPopup(this.dataset.popup);
+  });
+});
+
+</script>
 </body>
 </html>
