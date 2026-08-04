@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Document Intelligence and Content Understanding Overview</title>
+<link rel="stylesheet" href="shared/diagram.css">
+<style>
+body{background:#c2d6e8}
+
+/* ── Outputs → Consumers connector ── */
+.consumers-connector{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:-2px 0 12px;padding-right:74px}
+.cc-label{font-family:'Segoe UI',sans-serif;font-size:11.5px;font-weight:600;color:#4a6478;letter-spacing:-0.01em}
+.consumers-connector svg{display:block;color:#8aabc8}
+
+/* ── Column sub-label (e.g. "from both services") ── */
+.col-sublabel{font-family:'Segoe UI',sans-serif;font-size:9.5px;font-weight:600;color:#6a7588;text-align:center;margin:-2px 0 2px;letter-spacing:0.01em}
+
+/* ── Consumers banner (services & apps that use DI + CU) ── */
+.consumers-banner{position:relative;background:none;border:none;padding:4px 28px;margin-bottom:16px;display:flex;align-items:center;gap:22px}
+.consumers-banner-label{flex-shrink:0;width:132px;text-align:left;line-height:1.35}
+.consumers-row{flex:1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.consumer{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:transform 0.15s,filter 0.15s;width:120px}
+.consumer:hover{transform:translateY(-3px)}
+.consumer-icon{width:52px;height:52px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,0.10);border:1px solid rgba(0,0,0,0.05)}
+.consumer-icon svg{width:30px;height:30px}
+.consumer-icon img{width:34px;height:34px;object-fit:contain}
+.consumer-name{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:700;color:#0a2540;letter-spacing:-0.01em;text-align:center;line-height:1.1}
+.consumer-sub{font-family:'Segoe UI',sans-serif;font-size:10px;font-weight:500;color:#5a7088;text-align:center;line-height:1.25;margin-top:-2px}
+/* Microsoft Foundry logo tile inside Platform Services */
+.found-icon img{width:30px;height:30px;object-fit:contain}
+
+/* ── Main 3-column row ── */
+.main-row{display:flex;align-items:stretch;gap:18px}
+
+/* ── Shared section-title style (Consumers, Inputs, Outputs, Platform Services) ── */
+.col-label,.consumers-banner-label,.foundation-label{font-family:'Segoe UI',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:#1a4a7a}
+.col-label{margin-bottom:4px;text-align:center}
+
+/* ── Input / Output IO column ── */
+.inputs-col,.outputs-col{width:200px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;margin-bottom:50px}
+.io-stack{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:20px 0}
+
+.io-box{padding:11px 14px;border-radius:13px;background:#fff;font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;line-height:1.3;box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;align-items:center;gap:10px;min-height:56px}
+.io-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.io-icon svg{width:17px;height:17px}
+
+/* Input variants (warm coral) */
+.io-box.input{border:1px solid #f0a0b4;color:#8a3050;background:#fdeef2}
+.io-box.input .io-icon{background:#f8d2dc;color:#a04060}
+
+/* Output variants (mint) */
+.io-box.output{border:1px solid #78cc98;color:#1a6840;background:#edfaf2}
+.io-box.output .io-icon{background:#c6e8d4;color:#2d7a4d}
+
+/* Routing pills: which service accepts each input (color matched to service cards) */
+.route-tags{margin-left:auto;display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.route-tag{font-family:'Segoe UI',sans-serif;font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:0.03em;white-space:nowrap;line-height:1.35}
+.route-tag.di{background:rgba(0,120,212,0.14);color:#0a4d8a;border:1px solid rgba(0,120,212,0.38)}
+.route-tag.cu{background:rgba(15,76,143,0.14);color:#0f4c8f;border:1px solid rgba(15,76,143,0.38)}
+
+/* Inputs routing legend (decodes the pill colors) */
+.io-legend{margin-top:4px;display:flex;flex-direction:column;gap:4px;padding:8px 11px;background:rgba(255,255,255,0.55);border:1px solid rgba(0,0,0,0.05);border-radius:11px}
+.io-legend-row{display:flex;align-items:center;gap:7px;font-family:'Segoe UI',sans-serif;font-size:10px;font-weight:600;color:#3a5468;line-height:1.1}
+.io-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.io-legend-dot.di{background:#0078d4}
+.io-legend-dot.cu{background:#0f4c8f}
+
+/* ── Center services column ── */
+.services-col{flex:1;display:flex;flex-direction:column;gap:16px;min-width:0}
+
+.service-card{background:linear-gradient(180deg,#ffffff 0%,#fcfcfd 100%);border-radius:20px;border:1.5px solid rgba(0,0,0,0.07);box-shadow:0 6px 24px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.06);overflow:hidden;display:flex;flex-direction:column}
+
+/* Service header strip */
+.service-header{padding:14px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid #eef0f4}
+.service-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.service-icon svg{width:25px;height:25px}
+.service-icon img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block}
+.service-titles h2{font-family:'Segoe UI',sans-serif;font-size:19px;font-weight:700;letter-spacing:-0.02em;margin:0;line-height:1.15}
+.service-titles p{font-family:'Segoe UI',sans-serif;font-size:12px;color:#6a7588;font-weight:500;margin-top:2px}
+.service-pill{margin-left:auto;font-family:'Segoe UI',sans-serif;font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:7px;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap}
+
+/* Service body: feature grid */
+.service-body{padding:14px 20px 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.feature{padding:11px 13px;border-radius:11px;background:#fff;border:1px solid #e5e9ee;display:flex;flex-direction:column;gap:3px;cursor:pointer;transition:filter 0.15s,transform 0.15s,box-shadow 0.15s,border-color 0.15s}
+.feature:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.10)}
+.feature.wide{grid-column:1 / -1}
+.feature-title{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:700;color:#1a2030;letter-spacing:-0.01em}
+.feature-sub{font-family:'Segoe UI',sans-serif;font-size:11px;color:#6a7588;line-height:1.4}
+
+/* ── Document Intelligence (deep Azure blue) ── */
+.service-card.di{border-top:4px solid #0078d4}
+.service-card.di .service-icon{background:#ffffff;color:#0a4d8a}
+.service-card.di h2{color:#0a3a6e}
+.service-card.di .service-pill{background:rgba(0,120,212,0.12);color:#0a4d8a;border:1px solid rgba(0,120,212,0.25)}
+.service-card.di .feature:hover{border-color:#7ab5e0;box-shadow:0 6px 18px rgba(0,120,212,0.16)}
+
+/* ── Content Understanding (deep blue, matches icon) ── */
+.service-card.cu{border-top:4px solid #0f4c8f}
+.service-card.cu .service-icon{background:#ffffff;color:#0f4c8f}
+.service-card.cu h2{color:#0a3560}
+.service-card.cu .service-pill{background:rgba(15,76,143,0.12);color:#0f4c8f;border:1px solid rgba(15,76,143,0.25)}
+.service-card.cu .feature:hover{border-color:#7099c4;box-shadow:0 6px 18px rgba(15,76,143,0.16)}
+
+/* ── Arrow connectors ── */
+.arrow-col{display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;width:46px}
+.arrow-col.in{padding:80px 0 110px}
+.arrow-col.out{padding:102px 0 56px}
+.arrow-col svg{display:block}
+
+/* ── Foundation row ── */
+.foundation{margin-top:50px;border:1.5px dashed #8aabc8;border-radius:20px;padding:22px 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px 30px;align-items:center;position:relative;background:linear-gradient(180deg,rgba(255,255,255,0.4),rgba(255,255,255,0.15))}
+.foundation-label{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c2d6e8;padding:0 14px;white-space:nowrap}
+.found-item{display:flex;align-items:center;gap:11px;cursor:pointer;transition:filter 0.15s,transform 0.15s}
+.found-item:hover{transform:translateY(-2px);filter:brightness(0.95)}
+.found-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.65);flex-shrink:0}
+.found-icon svg{width:21px;height:21px;color:#0a4d8a}
+.found-text{font-family:'Segoe UI',sans-serif;font-size:14px;font-weight:700;color:#0a2540;letter-spacing:-0.01em}
+.found-sub{font-family:'Segoe UI',sans-serif;font-size:11px;color:#4a6478;font-weight:500}
+
+/* ── Dimmable sections ── */
+.inputs-col,.outputs-col,.service-card.di,.service-card.cu,.foundation,.consumers-banner{transition:filter 0.35s ease,opacity 0.35s ease}
+
+/* ── Hover effects for clickables ── */
+.io-box{transition:filter 0.15s,transform 0.15s,box-shadow 0.15s}
+.io-box:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.10)}
+</style>
+</head>
+<body>
+<a href="index.html" class="back-btn">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  Back
+</a>
+<div class="diagram">
+
+  <!-- ═══ TOP: Consuming services & apps ═══ -->
+  <div class="consumers-banner">
+    <div class="consumers-banner-label">Consuming Services &amp; Apps</div>
+    <div class="consumers-row">
+
+      <div class="consumer" data-popup="consumer-search">
+        <div class="consumer-icon">
+          <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="cSearch" x1="4" y1="6" x2="26" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#2aa3ff"/><stop offset="1" stop-color="#0062c4"/></linearGradient></defs><path fill="url(#cSearch)" d="M9.5 21A6.5 6.5 0 0 1 8.7 8.06 7 7 0 0 1 22.3 9.3 5.5 5.5 0 0 1 21.5 21z"/><circle cx="14.5" cy="14" r="3.8" fill="none" stroke="#fff" stroke-width="2"/><line x1="17.3" y1="16.8" x2="20.5" y2="20" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="consumer-name">Search</div>
+        <div class="consumer-sub">Azure AI Search</div>
+      </div>
+
+      <div class="consumer" data-popup="consumer-agents">
+        <div class="consumer-icon">
+          <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="cAgents" x1="6" y1="4" x2="26" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#7A4FF0"/><stop offset="1" stop-color="#D6259A"/></linearGradient></defs><path fill="url(#cAgents)" d="M16 3l11 6.35v13.3L16 29 5 22.65V9.35z"/><path fill="#fff" d="M16 10l1.7 3.6 3.6 1.7-3.6 1.7L16 20.6l-1.7-3.6L10.7 15.3l3.6-1.7z"/></svg>
+        </div>
+        <div class="consumer-name">Agents</div>
+        <div class="consumer-sub">Foundry Agents</div>
+      </div>
+
+      <div class="consumer" data-popup="consumer-databases">
+        <div class="consumer-icon">
+          <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="cDb" x1="8" y1="8" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#37c6ff"/><stop offset="1" stop-color="#1673d6"/></linearGradient></defs><ellipse cx="16" cy="16" rx="13" ry="5.4" fill="none" stroke="#2a8fe0" stroke-width="1.8" transform="rotate(-30 16 16)"/><circle cx="16" cy="16" r="7.2" fill="url(#cDb)"/></svg>
+        </div>
+        <div class="consumer-name">Databases</div>
+        <div class="consumer-sub">Cosmos DB, SQL, Dataverse</div>
+      </div>
+
+      <div class="consumer" data-popup="consumer-copilots">
+        <div class="consumer-icon">
+          <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="cCop" x1="6" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse"><stop stop-color="#2aa3ff"/><stop offset="0.4" stop-color="#8a5cf6"/><stop offset="0.72" stop-color="#e0399a"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs><path fill="url(#cCop)" d="M16 4c1.9 5.2 5.2 8.5 10.4 10.4C21.2 16.3 17.9 19.6 16 24.8 14.1 19.6 10.8 16.3 5.6 14.4 10.8 12.5 14.1 9.2 16 4z"/></svg>
+        </div>
+        <div class="consumer-name">Copilots</div>
+        <div class="consumer-sub">Copilot Studio, M365 Copilot</div>
+      </div>
+
+      <div class="consumer" data-popup="consumer-apps">
+        <div class="consumer-icon">
+          <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="cApps" x1="7" y1="7" x2="25" y2="25" gradientUnits="userSpaceOnUse"><stop stop-color="#33a8ff"/><stop offset="1" stop-color="#1268cf"/></linearGradient></defs><circle cx="16" cy="16" r="10" fill="url(#cApps)"/><path d="M16 9.5L10.5 19M16 9.5L21.5 19M10.5 19h11" stroke="#fff" stroke-width="1.4" fill="none"/><circle cx="16" cy="9.5" r="1.9" fill="#fff"/><circle cx="10.5" cy="19" r="1.9" fill="#fff"/><circle cx="21.5" cy="19" r="1.9" fill="#fff"/></svg>
+        </div>
+        <div class="consumer-name">Apps</div>
+        <div class="consumer-sub">Power Apps, custom apps</div>
+      </div>
+
+      <div class="consumer" data-popup="consumer-fabric">
+        <div class="consumer-icon">
+          <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="cFab" x1="8" y1="6" x2="24" y2="26" gradientUnits="userSpaceOnUse"><stop stop-color="#33d1e0"/><stop offset="1" stop-color="#1b8fd6"/></linearGradient></defs><rect x="9" y="9" width="14" height="14" rx="3.5" transform="rotate(45 16 16)" fill="url(#cFab)"/><path fill="#fff" d="M17.5 9.5l-6 8.5h3.4l-1 4.5 6-8.5h-3.4z"/></svg>
+        </div>
+        <div class="consumer-name">Fabric</div>
+        <div class="consumer-sub">Microsoft Fabric</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Connector: outputs feed the consumers above ── -->
+  <div class="consumers-connector">
+    <span class="cc-label">Outputs power these services &amp; apps</span>
+    <svg width="16" height="34" viewBox="0 0 16 34" fill="none"><line x1="8" y1="34" x2="8" y2="11" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 3"/><polygon points="1,13 8,1 15,13" fill="currentColor"/></svg>
+  </div>
+
+  <!-- ═══ MAIN: Inputs | Services | Outputs ═══ -->
+  <div class="main-row">
+
+    <!-- ── Inputs column ── -->
+    <div class="inputs-col">
+      <div class="col-label">Inputs</div>
+
+      <div class="io-stack">
+      <div class="io-box input" data-popup="input-documents">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        </div>
+        <div>Documents<br><span style="font-size:10.5px;font-weight:500;color:#a06070">PDF, Word, scans</span></div>
+        <div class="route-tags"><span class="route-tag di">DI</span><span class="route-tag cu">CU</span></div>
+      </div>
+
+      <div class="io-box input" data-popup="input-images">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div>Images<br><span style="font-size:10.5px;font-weight:500;color:#a06070">JPEG, PNG, BMP, TIFF</span></div>
+        <div class="route-tags"><span class="route-tag di">DI</span><span class="route-tag cu">CU</span></div>
+      </div>
+
+      <div class="io-box input" data-popup="input-audio">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </div>
+        <div>Audio<br><span style="font-size:10.5px;font-weight:500;color:#a06070">MP3, WAV, calls</span></div>
+        <div class="route-tags"><span class="route-tag cu">CU only</span></div>
+      </div>
+
+      <div class="io-box input" data-popup="input-video">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        <div>Video<br><span style="font-size:10.5px;font-weight:500;color:#a06070">MP4, AVI, MOV</span></div>
+        <div class="route-tags"><span class="route-tag cu">CU only</span></div>
+      </div>
+      </div>
+
+      <div class="io-legend">
+        <div class="io-legend-row"><span class="io-legend-dot di"></span>DI = Document Intelligence</div>
+        <div class="io-legend-row"><span class="io-legend-dot cu"></span>CU = Content Understanding</div>
+      </div>
+    </div>
+
+    <!-- ── Arrows in (blue = to both, violet = to Content Understanding only) ── -->
+    <div class="arrow-col in">
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#0f4c8f" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#0f4c8f"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#0f4c8f" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#0f4c8f"/></svg>
+    </div>
+
+    <!-- ── Services column ── -->
+    <div class="services-col">
+
+      <!-- DOCUMENT INTELLIGENCE -->
+      <div class="service-card di">
+        <div class="service-header">
+          <div class="service-icon">
+            <img src="shared/images/document-intelligence.png" alt="Azure Document Intelligence">
+          </div>
+          <div class="service-titles">
+            <h2 data-popup="document-intelligence">Azure Document Intelligence</h2>
+            <p>Deterministic OCR and intelligent document processing</p>
+          </div>
+        </div>
+        <div class="service-body">
+          <div class="feature" data-popup="di-extract">
+            <div class="feature-title">Content Extraction</div>
+            <div class="feature-sub">Read and Layout: printed and handwritten text, tables, structure</div>
+          </div>
+          <div class="feature" data-popup="di-prebuilt">
+            <div class="feature-title">Prebuilt Library</div>
+            <div class="feature-sub">Invoice, Receipt, ID, Bank Statement, Tax, Mortgage, Contract</div>
+          </div>
+          <div class="feature" data-popup="di-custom">
+            <div class="feature-title">Customization</div>
+            <div class="feature-sub">Train custom neural and template models, plus a document classifier</div>
+          </div>
+          <div class="feature" data-popup="di-approach">
+            <div class="feature-title">Approach</div>
+            <div class="feature-sub">Deterministic, strongly typed output; add-ons like high-res, formulas, barcodes</div>
+          </div>
+          <div class="feature wide" data-popup="di-scale">
+            <div class="feature-title">Reasoning &amp; Scale</div>
+            <div class="feature-sub">Batch analysis up to 10,000 documents; deterministic and repeatable at scale</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT UNDERSTANDING -->
+      <div class="service-card cu">
+        <div class="service-header">
+          <div class="service-icon">
+            <img src="shared/images/content-understanding.png" alt="Azure Content Understanding">
+          </div>
+          <div class="service-titles">
+            <h2 data-popup="content-understanding">Azure Content Understanding</h2>
+            <p>Generative AI for multimodal content extraction</p>
+          </div>
+        </div>
+        <div class="service-body">
+          <div class="feature" data-popup="cu-extract">
+            <div class="feature-title">Content Extraction</div>
+            <div class="feature-sub">OCR, transcription, and layout across documents, images, audio, and video</div>
+          </div>
+          <div class="feature" data-popup="cu-prebuilt">
+            <div class="feature-title">Prebuilt Library</div>
+            <div class="feature-sub">Industry analyzers for documents, call center, media, and more</div>
+          </div>
+          <div class="feature" data-popup="cu-custom">
+            <div class="feature-title">Customization</div>
+            <div class="feature-sub">Define a schema to extract, classify, or generate, with no model training</div>
+          </div>
+          <div class="feature" data-popup="cu-approach">
+            <div class="feature-title">Approach</div>
+            <div class="feature-sub">Generative and multimodal; segments content and generates new insights</div>
+          </div>
+          <div class="feature wide" data-popup="cu-scale">
+            <div class="feature-title">Reasoning &amp; Scale</div>
+            <div class="feature-sub">Pro mode (preview): multi-step reasoning across document sets with reference data</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Arrows out ── -->
+    <div class="arrow-col out">
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+      <svg width="46" height="46" viewBox="0 0 46 46"><line x1="2" y1="23" x2="37" y2="23" stroke="#8aabc8" stroke-width="2.5"/><polygon points="37,17 46,23 37,29" fill="#8aabc8"/></svg>
+    </div>
+
+    <!-- ── Outputs column ── -->
+    <div class="outputs-col">
+      <div class="col-label">Outputs</div>
+      <div class="col-sublabel">From both services</div>
+
+      <div class="io-stack">
+      <div class="io-box output" data-popup="output-json">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div>Structured JSON<br><span style="font-size:10.5px;font-weight:500;color:#3a8060">Schema-aligned fields</span></div>
+      </div>
+
+      <div class="io-box output" data-popup="output-markdown">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+        </div>
+        <div>Markdown<br><span style="font-size:10.5px;font-weight:500;color:#3a8060">RAG ready content</span></div>
+      </div>
+
+      <div class="io-box output" data-popup="output-keyvalue">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+        </div>
+        <div>Key Value Pairs<br><span style="font-size:10.5px;font-weight:500;color:#3a8060">Typed business data</span></div>
+      </div>
+
+      <div class="io-box output" data-popup="output-confidence">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <div>Confidence + Grounding<br><span style="font-size:10.5px;font-weight:500;color:#3a8060">Auditable extractions</span></div>
+      </div>
+
+      <div class="io-box output" data-popup="output-classification">
+        <div class="io-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41L13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        </div>
+        <div>Classification<br><span style="font-size:10.5px;font-weight:500;color:#3a8060">Route and split multi-doc files</span></div>
+      </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ FOUNDATION: Platform Services ═══ -->
+  <div class="foundation">
+    <div class="foundation-label">Platform Services</div>
+
+    <div class="found-item" data-popup="foundry">
+      <div class="found-icon">
+        <img src="shared/images/microsoft-foundry.png" alt="Microsoft Foundry">
+      </div>
+      <div><div class="found-text">Microsoft Foundry</div><div class="found-sub">Unified AI platform hosting both services</div></div>
+    </div>
+
+    <div class="found-item" data-popup="foundry-models">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <div><div class="found-text">Foundry Models</div><div class="found-sub">GPT, embeddings, custom deployments</div></div>
+    </div>
+
+    <div class="found-item" data-popup="content-safety">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div><div class="found-text">Content Safety</div><div class="found-sub">Guardrails, filters, Responsible AI</div></div>
+    </div>
+
+    <div class="found-item" data-popup="studios">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div><div class="found-text">Studios</div><div class="found-sub">Document Intelligence + Content Understanding Studio</div></div>
+    </div>
+
+    <div class="found-item" data-popup="sdks">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <div><div class="found-text">SDKs &amp; REST API</div><div class="found-sub">C#, Python, Java, JavaScript</div></div>
+    </div>
+
+    <div class="found-item" data-popup="deployment">
+      <div class="found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <div><div class="found-text">Deployment</div><div class="found-sub">Cloud, containers, sovereign regions</div></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Popup overlay -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-card" id="popupCard">
+    <button class="popup-close" id="popupClose">&#x2715;</button>
+    <div class="popup-accent" id="popupAccent"></div>
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-subtitle" id="popupSubtitle"></div>
+    <div class="popup-body">
+      <div>
+        <div class="popup-section-label">Key Capabilities</div>
+        <ul class="popup-list" id="popupList"></ul>
+      </div>
+      <div>
+        <div class="popup-section-label">Example Scenarios</div>
+        <ul class="popup-list" id="popupScenarios"></ul>
+      </div>
+    </div>
+    <div class="popup-screenshots" id="popupScreenshots"></div>
+  </div>
+</div>
+
+<!-- Legend panel -->
+<div class="legend-panel">
+  <span class="legend-title">Focus</span>
+  <div class="legend-sep"></div>
+  <button class="leg active" data-target="consumers-banner">Consumers</button>
+  <button class="leg active" data-target="inputs-col">Inputs</button>
+  <button class="leg active" data-target="service-card.di">Document Intelligence</button>
+  <button class="leg active" data-target="service-card.cu">Content Understanding</button>
+  <button class="leg active" data-target="outputs-col">Outputs</button>
+  <button class="leg active" data-target="foundation">Platform Services</button>
+  <div class="legend-sep"></div>
+  <button class="leg active" id="allBtn">All</button>
+</div>
+
+<!-- Branding -->
+<div class="diagram-brand">
+  <span class="diagram-brand-text">Created by</span>
+  <img class="diagram-brand-logo" src="shared/images/KahilConsulting-logo.png" alt="Kahil Consulting">
+</div>
+
+<script>
+var popupData = {
+  foundry: {
+    title: 'Microsoft Foundry',
+    subtitle: 'Unified Microsoft platform that hosts both Content Understanding and Document Intelligence',
+    accent: '#0078d4',
+    desc: 'Both services are available through a single Microsoft Foundry resource in the Azure portal, with shared authentication, model deployments, content safety, and observability.',
+    points: [
+      'Single Foundry resource provisions both services',
+      'Bring your own Foundry model deployments (GPT family, embeddings)',
+      'Shared Responsible AI guardrails and content filtering',
+      'Region availability, scaling, and billing managed centrally',
+      'Common access through REST API, SDKs, and Studio experiences'
+    ],
+    scenarios: [
+      'Stand up a single AI platform that combines deterministic OCR with generative reasoning over multimodal content',
+      'Govern AI usage across business units from one resource with consistent safety policies'
+    ]
+  },
+
+  'consumer-search': {
+    title: 'Azure AI Search',
+    subtitle: 'Grounding index for retrieval and RAG built from extracted content',
+    accent: '#0078d4',
+    desc: 'Extracted markdown and structured fields are chunked and indexed in Azure AI Search, giving downstream copilots and agents a searchable knowledge base.',
+    points: [
+      'Ingests Document Intelligence Layout markdown and Content Understanding output as chunks',
+      'Hybrid keyword plus vector search with semantic ranking',
+      'Preserves tables, sections, and figure descriptions for better retrieval',
+      'Powers grounding for Copilots and Foundry agents'
+    ],
+    scenarios: [
+      'Index policy documents for a Copilot knowledge base',
+      'Semantic search across a scanned document archive'
+    ]
+  },
+  'consumer-agents': {
+    title: 'Foundry Agents',
+    subtitle: 'Agents that reason over clean, schema aligned inputs',
+    accent: '#7c3aed',
+    desc: 'Content Understanding turns messy, multimodal files into predictable structured inputs, so agents can automate decisions with accuracy and auditability.',
+    points: [
+      'Structured JSON with confidence scores and grounding for reliable decisions',
+      'Extraction called as a tool inside an agent workflow',
+      'Clean markdown for reasoning over long or complex documents',
+      'Reduces hallucination by grounding agents in source content'
+    ],
+    scenarios: [
+      'An accounts payable agent that validates invoices before posting',
+      'A claims agent that extracts and checks policy documents'
+    ]
+  },
+  'consumer-databases': {
+    title: 'Databases',
+    subtitle: 'Store extracted fields as queryable business records',
+    accent: '#1673d6',
+    desc: 'Strongly typed key value output maps directly into relational and NoSQL stores, ready for reporting, lookups, and downstream automation.',
+    points: [
+      'Push typed fields into Azure SQL, Cosmos DB, or Dataverse',
+      'Invoice line items and tables map to rows and columns',
+      'Confidence scores stored alongside values for auditing',
+      'Foundation for master data and transaction records'
+    ],
+    scenarios: [
+      'Load invoice line items into a finance database',
+      'Populate Dataverse records from ID document extraction'
+    ]
+  },
+  'consumer-copilots': {
+    title: 'Copilots',
+    subtitle: 'Ground Copilot Studio and Microsoft 365 Copilot on your content',
+    accent: '#e0399a',
+    desc: 'Markdown and structured fields make document content consumable by copilots, so they answer precise questions with citations back to the source.',
+    points: [
+      'RAG ready markdown for Copilot knowledge sources',
+      'Structured fields let copilots answer specific data questions',
+      'Grounding provides citations to the exact source region',
+      'Confidence supports trustworthy, reviewable answers'
+    ],
+    scenarios: [
+      'A support Copilot grounded in extracted product manuals',
+      'A Copilot Studio agent answering from contract clauses'
+    ]
+  },
+  'consumer-apps': {
+    title: 'Apps',
+    subtitle: 'Power Apps and custom apps that call extraction directly',
+    accent: '#1268cf',
+    desc: 'Applications and low code workflows call the services through REST and SDKs, embedding extraction into user experiences and business processes.',
+    points: [
+      'Call REST API or SDKs from Power Apps, Logic Apps, or web apps',
+      'Trigger extraction inside Power Automate flows',
+      'Surface extracted fields in a review and approval UI',
+      'Confidence thresholds drive human in the loop routing'
+    ],
+    scenarios: [
+      'A Power App that captures receipts and extracts totals',
+      'A web portal that validates uploaded documents'
+    ]
+  },
+  'consumer-fabric': {
+    title: 'Microsoft Fabric',
+    subtitle: 'Analytics and reporting over extracted data',
+    accent: '#1b8fd6',
+    desc: 'Structured output lands in OneLake so extracted document data can be combined with enterprise data for analytics and Power BI reporting.',
+    points: [
+      'Land structured output in OneLake for analysis',
+      'Build Power BI reports on extracted fields and trends',
+      'Combine document data with other enterprise datasets',
+      'Track volumes, turnaround time, and confidence over time'
+    ],
+    scenarios: [
+      'Analyze spend across thousands of extracted invoices',
+      'Report on processing time and confidence by document type'
+    ]
+  },
+
+  'input-documents': {
+    title: 'Documents',
+    subtitle: 'Structured and unstructured paper based content',
+    accent: '#c84a6a',
+    desc: 'Both services accept document inputs. Document Intelligence specialises in structured forms, while Content Understanding can reason over long, complex documents using generative AI.',
+    points: [
+      'Supported formats include PDF, TIFF, JPEG, PNG, BMP, HEIF, and Office files',
+      'Multipage PDFs handled with page level or full document analysis',
+      'Printed and handwritten text recognised by the Read model',
+      'Tables, selection marks, and barcodes detected by Layout'
+    ],
+    scenarios: [
+      'Invoice and purchase order ingestion for accounts payable',
+      'Contract review with clause extraction and risk flagging',
+      'Mortgage and loan application packages with hundreds of pages'
+    ]
+  },
+  'input-images': {
+    title: 'Images',
+    subtitle: 'Photos and scans accepted by both Document Intelligence and Content Understanding',
+    accent: '#c84a6a',
+    desc: 'Both services accept image inputs. Document Intelligence runs OCR and structured field extraction on image based documents such as scans and photos of forms. Content Understanding adds generative analysis with descriptions, chart analysis, and visual classification.',
+    points: [
+      'Common image formats including JPEG, PNG, BMP, TIFF, and HEIF',
+      'Document Intelligence: OCR and field extraction from scanned or photographed documents',
+      'Content Understanding: figure description and chart analysis for accessibility and RAG',
+      'Content Understanding: visual classification using a defined category schema'
+    ],
+    scenarios: [
+      'Catalog product photos with attribute extraction for ecommerce',
+      'Describe charts and diagrams to make them searchable in RAG indexes',
+      'Classify damage photos for insurance claim triage'
+    ]
+  },
+  'input-audio': {
+    title: 'Audio',
+    subtitle: 'Voice content handled by Content Understanding only (not Document Intelligence)',
+    accent: '#c84a6a',
+    desc: 'Content Understanding transcribes audio and runs generative analyzers to extract sentiment, key topics, decisions, and structured insights.',
+    points: [
+      'Speech transcription with speaker diarisation',
+      'Sentiment, intent, and entity detection on conversation content',
+      'Summaries, action items, and KPI generation per analyzer schema',
+      'Confidence scores and source grounding on every field'
+    ],
+    scenarios: [
+      'Post call analytics for contact centres tracking customer satisfaction',
+      'Sales call summarisation with deal stage and next step extraction',
+      'Compliance review of recorded advisor conversations'
+    ]
+  },
+  'input-video': {
+    title: 'Video',
+    subtitle: 'Long form video handled by Content Understanding only (not Document Intelligence)',
+    accent: '#c84a6a',
+    desc: 'Content Understanding segments video into scenes, transcribes speech, recognises visual elements, and generates structured descriptions.',
+    points: [
+      'Automatic scene segmentation and key visual recognition',
+      'Speech transcription synchronised with timestamps',
+      'Scene level descriptions and per scene field extraction',
+      'Face description fields when enabled for the analyzer'
+    ],
+    scenarios: [
+      'Media asset management with searchable scene and dialogue metadata',
+      'Training video indexing with topic and learning objective tags',
+      'Security and incident review with event timeline generation'
+    ]
+  },
+
+  'document-intelligence': {
+    title: 'Azure Document Intelligence',
+    subtitle: 'Cloud OCR and intelligent document processing service',
+    accent: '#0078d4',
+    desc: 'Document Intelligence is a deterministic, machine learning based service that extracts text, structure, key value pairs, and fields from forms and documents at high accuracy. Currently at v4.0 GA.',
+    points: [
+      'Deterministic extraction with strongly typed output (date, currency, number, address)',
+      'High accuracy for structured and semi structured documents',
+      'Prebuilt models for the most common business document types',
+      'Custom models trained on your labelled data',
+      'Available via REST API, SDKs, containers, and Studio'
+    ],
+    scenarios: [
+      'Automate accounts payable by extracting invoice line items into ERP',
+      'KYC onboarding using passport and driver licence extraction',
+      'Mortgage underwriting using 1003, 1004, 1008, and closing disclosure forms'
+    ]
+  },
+  'di-extract': {
+    title: 'Content Extraction',
+    subtitle: 'Read and Layout: text and structure from documents and images',
+    accent: '#0078d4',
+    desc: 'Two general models that work on any document. Read pulls text, Layout adds structure. This is the deterministic OCR foundation under every prebuilt and custom model.',
+    points: [
+      'Read: printed and handwritten text with paragraph and language detection',
+      'Layout: tables, selection marks, paragraph roles, and section structure',
+      'Inputs are documents and images only (PDF, Office, scans, photos)',
+      'Markdown output from Layout for RAG semantic chunking'
+    ],
+    scenarios: [
+      'Digitise archived paper records into searchable text',
+      'Convert scanned reports into structured tables for analytics'
+    ]
+  },
+  'di-prebuilt': {
+    title: 'Prebuilt Library',
+    subtitle: 'Ready to use models for common business documents',
+    accent: '#0078d4',
+    desc: 'Microsoft maintained models with defined field schemas, no training required. Domains span financial services, tax, mortgage, and identity.',
+    points: [
+      'Financial and legal: Invoice, Receipt, Bank Statement, Pay Stub, Check, Credit Card, Contract',
+      'US Tax: W-2, 1098, 1099, 1040 and variations',
+      'US Mortgage: 1003, 1004, 1005, 1008, Closing Disclosure',
+      'Identity: passport, driver licence, health insurance card, marriage certificate',
+      'Strongly typed fields like InvoiceDate (date) and SubTotal (currency)'
+    ],
+    scenarios: [
+      'Accounts payable automation using prebuilt-invoice',
+      'Tax document processing using the prebuilt tax models'
+    ]
+  },
+  'di-custom': {
+    title: 'Customization',
+    subtitle: 'Train models on your own labelled documents',
+    accent: '#0078d4',
+    desc: 'When the prebuilt catalogue does not cover your document type, train a custom model on labelled samples. Customization here means training, trading setup effort for high, predictable accuracy.',
+    points: [
+      'Custom Neural: mixed type, structured and unstructured documents',
+      'Custom Template: documents with a consistent fixed layout',
+      'Custom Classifier: identify the document type before routing to an extractor',
+      'Compose several models behind a single endpoint',
+      'Label and train in Document Intelligence Studio'
+    ],
+    scenarios: [
+      'Industry specific forms like utility bills or insurance claims',
+      'A classifier plus model pipeline that routes incoming PDFs automatically'
+    ]
+  },
+  'di-approach': {
+    title: 'Approach',
+    subtitle: 'Deterministic, strongly typed extraction with optional add-ons',
+    accent: '#0078d4',
+    desc: 'Document Intelligence is machine learning based and deterministic: the same document yields the same strongly typed output. That suits high volume, audit sensitive processing. Add-ons extend the base extraction.',
+    points: [
+      'Strongly typed values: date, currency, number, address, phone number',
+      'Predictable, repeatable output for straight through processing',
+      'Add-ons: high resolution, query fields, formulas, fonts, barcodes',
+      'Searchable PDF and key value pairs on demand',
+      'Available in the cloud and in containers for disconnected use'
+    ],
+    scenarios: [
+      'High volume invoice and form processing with typed fields',
+      'Query fields to ask custom questions of an unfamiliar document'
+    ]
+  },
+  'di-scale': {
+    title: 'Reasoning & Scale',
+    subtitle: 'Deterministic processing at high volume',
+    accent: '#0078d4',
+    desc: 'Document Intelligence is built for high volume, repeatable processing rather than open ended reasoning. The batch API handles large document sets in a single request.',
+    points: [
+      'Batch analysis of up to 10,000 documents per request',
+      'Reads from and writes results to Azure Blob Storage',
+      'Deterministic output: the same document yields the same result every run',
+      'Cross document reasoning happens downstream, not inside the service'
+    ],
+    scenarios: [
+      'Overnight processing of a large invoice or forms backlog',
+      'Bulk digitisation of an archive into structured data'
+    ]
+  },
+
+  'content-understanding': {
+    title: 'Azure Content Understanding',
+    subtitle: 'Generative AI service for multimodal content extraction and classification',
+    accent: '#0f4c8f',
+    desc: 'Content Understanding uses generative AI to process documents, images, audio, and video into a user defined output format. It accelerates time to value by minimising prompt engineering and manual review.',
+    points: [
+      'Single unified Analyze API across all four modalities',
+      'Schema first: define fields, the service handles model selection and prompting',
+      'Confidence scores and source grounding on every extracted field',
+      'Industry tuned prebuilt analyzers for common scenarios',
+      'Built on Foundry model deployments that you bring'
+    ],
+    scenarios: [
+      'Intelligent document processing for tax preparation and mortgage applications',
+      'RAG ingestion pipeline producing markdown plus structured JSON',
+      'Post call analytics dashboards for contact centres',
+      'Agentic workflows that need clean, schema aligned inputs from messy files'
+    ]
+  },
+  'cu-prebuilt': {
+    title: 'Prebuilt Library',
+    subtitle: 'Industry analyzers for common multimodal scenarios',
+    accent: '#0f4c8f',
+    desc: 'Prebuilt analyzers give tuned output without defining a schema. An analyzer bundles content extraction settings, field schema, and model choice, and applies consistently to every input.',
+    points: [
+      'Document analyzers: invoice, tax, mortgage, identity, and more',
+      'Call center analyzers for conversation analytics',
+      'Media analyzers for video and image scenarios',
+      'Reusable across many files, versioned across environments'
+    ],
+    scenarios: [
+      'Reuse one invoice analyzer across all subsidiaries',
+      'Post call analytics for a contact centre'
+    ]
+  },
+  'cu-custom': {
+    title: 'Customization',
+    subtitle: 'Define a schema, no model training required',
+    accent: '#0f4c8f',
+    desc: 'Instead of training a model, you describe the fields you want and choose how each is produced. The service handles model selection and prompting, so setup is fast and code light.',
+    points: [
+      'Extract values directly from the content (documents only)',
+      'Classify content into a predefined category set',
+      'Generate new values such as summaries or scene descriptions',
+      'Improve quality with a few labelled examples (in-context learning)',
+      'Field types: string, number, date, boolean, plus arrays and objects'
+    ],
+    scenarios: [
+      'Classify call sentiment as Positive, Neutral, or Negative',
+      'Generate a one paragraph executive summary from a long contract'
+    ]
+  },
+  'cu-extract': {
+    title: 'Content Extraction',
+    subtitle: 'OCR, transcription, and layout across all four modalities',
+    accent: '#0f4c8f',
+    desc: 'The foundational step that normalises any input into a standard form. Unlike Document Intelligence, it also transcribes audio and video, and can segment content into logical chunks.',
+    points: [
+      'OCR and layout for documents and images',
+      'Speech to text with speaker diarisation for audio and video',
+      'Classify, split, and route a multi-document file to the right analyzer in one call',
+      'Segments documents by type and videos into scenes via enableSegment',
+      'Markdown representation for RAG ready output'
+    ],
+    scenarios: [
+      'Segment a one hour training video by scene for indexing',
+      'Produce clean markdown of a research paper for embedding'
+    ]
+  },
+  'cu-approach': {
+    title: 'Approach',
+    subtitle: 'Generative and multimodal, built on Foundry models',
+    accent: '#0f4c8f',
+    desc: 'Content Understanding uses generative AI to reason over messy, multimodal content and produce a user defined output. It trades some determinism for flexibility, multimodal reach, and the ability to generate, not just extract.',
+    points: [
+      'Multimodal: documents, images, audio, and video in one API',
+      'Generative: can create new content, not only lift existing text',
+      'Confidence scores and grounding for document fields, for auditability',
+      'Built on Foundry model deployments that you bring'
+    ],
+    scenarios: [
+      'Turn messy multimodal files into clean inputs for agents',
+      'RAG ingestion producing markdown plus structured JSON'
+    ]
+  },
+  'cu-scale': {
+    title: 'Reasoning & Scale',
+    subtitle: 'Pro mode reasons across document sets (preview)',
+    accent: '#0f4c8f',
+    desc: 'Beyond extracting fields, Content Understanding Pro mode applies multi-step reasoning across multiple input documents and reference data to validate, enrich, and draw conclusions.',
+    points: [
+      'Multi-step reasoning: break a complex question into steps',
+      'Process multiple related documents together in one request',
+      'Reference data (knowledge base) for linking, validation, and enrichment',
+      'Answers questions like: does this invoice match the contract?',
+      'Preview, documents only; trades away confidence and grounding'
+    ],
+    scenarios: [
+      'Check an invoice against its purchase order and contract for discrepancies',
+      'Confirm a mortgage application includes all required supporting documents'
+    ]
+  },
+
+  'output-json': {
+    title: 'Structured JSON',
+    subtitle: 'Schema aligned key value output for automation and integration',
+    accent: '#2d7a4d',
+    desc: 'Both services return JSON aligned to your defined or prebuilt schema. Direct mapping to Dataverse, ERP, CRM, or any downstream system.',
+    points: [
+      'Field names match the analyzer or prebuilt model schema',
+      'Strongly typed values where applicable (date, number, currency)',
+      'Includes confidence scores and grounding metadata',
+      'Easy to consume from Power Automate, Logic Apps, or custom code'
+    ],
+    scenarios: [
+      'Push extracted invoice JSON straight into Dynamics 365 Finance',
+      'Drive automated workflows from classification results',
+      'Feed structured fields into reporting and analytics warehouses'
+    ]
+  },
+  'output-markdown': {
+    title: 'Markdown',
+    subtitle: 'Clean, structured text output for search and RAG',
+    accent: '#2d7a4d',
+    desc: 'Both services output Markdown. Document Intelligence Layout returns Markdown for semantic chunking, and Content Understanding outputs Markdown across modalities, preserving structure such as headings, tables, and lists.',
+    points: [
+      'Document Intelligence Layout: Markdown via outputContentFormat for RAG chunking',
+      'Content Understanding: Markdown across documents, images, audio, and video',
+      'Preserves document hierarchy and table structure',
+      'Includes figure descriptions and audio transcripts inline',
+      'Drop in replacement for raw OCR text in RAG pipelines'
+    ],
+    scenarios: [
+      'Build an Azure AI Search index over policy documents',
+      'Ground a Copilot Studio agent in markdown chunks of your knowledge base',
+      'Power semantic search over training videos by transcribed scene'
+    ]
+  },
+  'output-keyvalue': {
+    title: 'Key Value Pairs',
+    subtitle: 'Typed business data ready for downstream systems',
+    accent: '#2d7a4d',
+    desc: 'Both services return field values as strongly typed key value pairs. Document Intelligence maps prebuilt fields to specific types automatically.',
+    points: [
+      'Types include string, number, integer, date, time, currency, address, phoneNumber',
+      'Custom models inherit type definitions from training labels',
+      'Auto normalisation of dates and currencies during inference',
+      'Direct mapping to relational database columns'
+    ],
+    scenarios: [
+      'Push invoice line items into accounts payable tables',
+      'Sync extracted ID document fields into customer master data',
+      'Populate Dataverse records from receipt extraction'
+    ]
+  },
+  'output-confidence': {
+    title: 'Confidence + Grounding',
+    subtitle: 'Auditable extractions with reliability and provenance',
+    accent: '#2d7a4d',
+    desc: 'Every extracted value comes with a confidence score and a pointer back to its origin in the source content. The foundation for human in the loop and straight through processing.',
+    points: [
+      'Numeric confidence between 0 and 1 per extracted field',
+      'Grounding identifies the exact text region or page coordinates',
+      'Drives automated routing: high scores skip review, low scores escalate',
+      'Provides audit evidence for compliance and dispute resolution'
+    ],
+    scenarios: [
+      'Auto approve invoices above 95 percent confidence, queue the rest',
+      'Show users the highlighted source span for every AI extracted value',
+      'Build trust in AI extraction by exposing provenance to reviewers'
+    ]
+  },
+  'output-classification': {
+    title: 'Classification',
+    subtitle: 'Identify, split, and route documents to the right analyzer',
+    accent: '#2d7a4d',
+    desc: 'Both services classify documents. Document Intelligence offers custom classifier models, and Content Understanding can classify, split, and route a multi-document file to the right analyzer in a single Analyze call.',
+    points: [
+      'Predefined category list per analyzer or classifier',
+      'Content Understanding splits a multi-doc file and routes each part to its analyzer',
+      'Hierarchical classification, up to five levels for documents',
+      'Confidence per category, a common first step in multi-document workflows'
+    ],
+    scenarios: [
+      'Classify incoming mortgage packet pages into 1003, 1004, W-2, paystub',
+      'Tag call recordings as Support, Sales, or Complaint',
+      'Filter PDFs into Invoice vs Contract before running extraction'
+    ]
+  },
+
+  'foundry-models': {
+    title: 'Foundry Models',
+    subtitle: 'Generative and embedding models that power Content Understanding',
+    accent: '#0a4d8a',
+    desc: 'You bring your own deployments of supported Foundry generative models and text embedding models. Content Understanding uses them for field extraction, figure analysis, and other generative features.',
+    points: [
+      'Supports GPT family and other Foundry generative models',
+      'Embedding models used for training examples and similarity',
+      'Model selection per analyzer for cost and quality tuning',
+      'Shared model deployments reduce total platform spend'
+    ],
+    scenarios: [
+      'Use a smaller faster model for high volume invoice classification',
+      'Use a larger model for complex contract clause analysis',
+      'Share GPT deployments across multiple business workloads'
+    ]
+  },
+  'content-safety': {
+    title: 'Content Safety',
+    subtitle: 'Responsible AI guardrails built into every model deployment',
+    accent: '#0a4d8a',
+    desc: 'Content Understanding surfaces content filter results directly from the Foundry model deployment. Each deployment has an associated Guardrails instance evaluating prompts and completions.',
+    points: [
+      'Standard categories: hate, violence, sexual, self harm',
+      'Configurable severity thresholds, block or annotate mode',
+      'Results returned in the analyze response as a content_filters array',
+      'Biometric data handling guidance for face description features',
+      'Aligned with Microsoft Responsible AI standards'
+    ],
+    scenarios: [
+      'Detect and block harmful content in user uploaded media',
+      'Annotate borderline content for downstream human review',
+      'Meet compliance obligations for regulated industries'
+    ]
+  },
+  studios: {
+    title: 'Studios',
+    subtitle: 'Browser based authoring environments for both services',
+    accent: '#0a4d8a',
+    desc: 'Each service has a Studio experience for hands on labelling, analyzer authoring, and testing. The Studios complement programmatic access via SDKs.',
+    points: [
+      'Document Intelligence Studio: label data, train and test models, try prebuilts',
+      'Content Understanding Studio: build classification analyzers, improve quality with labelled data',
+      'No code experience for non developers and business analysts',
+      'Useful for migrating from Document Intelligence to Content Understanding'
+    ],
+    scenarios: [
+      'Train a custom Document Intelligence model on 50 labelled invoices',
+      'Iterate on a Content Understanding analyzer schema with sample uploads',
+      'Demo extraction capabilities to stakeholders without writing code'
+    ]
+  },
+  sdks: {
+    title: 'SDKs & REST API',
+    subtitle: 'Programmatic access for every language and platform',
+    accent: '#0a4d8a',
+    desc: 'Both services expose REST APIs and ship official SDKs across the most common languages. Suitable for any application, batch job, or workflow integration.',
+    points: [
+      'Official SDKs: C#, Python, Java, JavaScript',
+      'REST API for any language including PowerShell and Go',
+      'Synchronous and long running async analyze operations',
+      'Direct calls from Power Automate, Logic Apps, and Azure Functions'
+    ],
+    scenarios: [
+      'Embed extraction inside a custom Power Apps or web app',
+      'Batch process millions of documents in an Azure Function pipeline',
+      'Call from Power Automate flow as part of a multi step workflow'
+    ]
+  },
+  deployment: {
+    title: 'Deployment',
+    subtitle: 'Flexible hosting options for cloud and regulated workloads',
+    accent: '#0a4d8a',
+    desc: 'Document Intelligence supports both cloud and container deployment. Content Understanding runs in the Microsoft Foundry cloud with regional availability across many Azure regions.',
+    points: [
+      'Cloud hosted Foundry resource is the default for both services',
+      'Document Intelligence containers available for disconnected scenarios',
+      'Regional availability across the major Azure geographies',
+      'Sovereign cloud options for government and regulated industries'
+    ],
+    scenarios: [
+      'Process documents in air gapped environments using Document Intelligence containers',
+      'Meet data residency requirements by deploying in the right region',
+      'Comply with sovereign cloud obligations for public sector workloads'
+    ]
+  }
+};
+
+var classMap = {
+  'service-card.di': 'document-intelligence',
+  'service-card.cu': 'content-understanding'
+};
+</script>
+<script src="shared/diagram.js"></script>
+</body>
+</html>

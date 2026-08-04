@@ -33,6 +33,7 @@ body{padding:48px 40px 64px}
 .card.prompts::before{background:linear-gradient(90deg,#e8a44c,#f0c078)}
 .card.power-automate::before{background:linear-gradient(90deg,#0066b8,#2b7dc2)}
 .card.power-apps::before{background:linear-gradient(90deg,#742774,#9a3f9a)}
+.card.doc-intel::before{background:linear-gradient(90deg,#0078d4,#7c3aed)}
 
 /* ── Card icon ── */
 .card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -47,6 +48,8 @@ body{padding:48px 40px 64px}
 .card.power-automate .card-icon svg{color:#0066b8}
 .card.power-apps .card-icon{background:linear-gradient(135deg,#f5e0f5,#ead0ea)}
 .card.power-apps .card-icon svg{color:#742774}
+.card.doc-intel .card-icon{background:linear-gradient(135deg,#deeeff,#e3d6fb)}
+.card.doc-intel .card-icon svg{color:#0078d4}
 
 /* ── Card content ── */
 .card-top{display:flex;align-items:flex-start;gap:14px}
@@ -154,6 +157,24 @@ body{padding:48px 40px 64px}
     <div class="card-desc">How Power Automate flows and Copilot Studio agents work together — triggers, actions, agent flows, and end-to-end orchestration.</div>
     <div class="badge soon">Coming soon</div>
   </div>
+
+  <!-- 6. Azure Document Intelligence & Content Understanding — LIVE -->
+  <a class="card live doc-intel" href="Azure Document Intelligence and Content Understanding Overview Diagram.html">
+    <div class="card-top">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-title">Azure Document Intelligence &amp; Content Understanding</div>
+        <div class="card-sub">Azure AI Foundry document &amp; multimodal processing</div>
+      </div>
+    </div>
+    <div class="card-desc">How Azure Document Intelligence (deterministic OCR / IDP) and Azure Content Understanding (generative multimodal extraction) fit together in Azure AI Foundry.</div>
+    <div class="badge live">Live</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
 
   <!-- 5. Power Apps Overview — Coming Soon -->
   <div class="card power-apps">
